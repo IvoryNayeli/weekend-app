@@ -453,4 +453,3 @@ function compileSummary() {
     
     return summary;
 }
-}
