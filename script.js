@@ -3,8 +3,8 @@ const CONFIG = {
     // Email pour FormSubmit (à modifier)
     EMAIL: "your-email@example.com",
     
-    // Messages personnalisés
-    REFUSAL_MESSAGE: "Alors dans ce cas, j'attendrai patiemment les vcances d'août 😉",
+    // Message de sortie anticipée
+    EARLY_EXIT_MESSAGE: "Pas de souci, focus sur les vacances d'août dans ce cas ! ❤️",
     
     // Programmes selon destination
     PROGRAMS: {
@@ -119,10 +119,6 @@ function setupEventListeners() {
         btnSubmit.addEventListener('click', submitForm);
     }
 
-    const btnSendRefuse = document.getElementById('btn-send-refuse');
-    if (btnSendRefuse) {
-        btnSendRefuse.addEventListener('click', submitForm);
-    }
 }
 
 // ===== HELPER FUNCTIONS =====
@@ -150,13 +146,13 @@ function validateDates() {
         const customDatesInput = document.getElementById('custom-dates-text');
         state.customDates = customDatesInput ? customDatesInput.value : '';
         if (!state.customDates) {
-            endJourney("Pas de souci, on ajustera les dates plus tard 😉", false);
+            endJourney(CONFIG.EARLY_EXIT_MESSAGE);
             return;
         }
     }
     
     if (state.dates.length === 0) {
-        alert('Veuillez sélectionner au moins une option');
+        alert('Choisis au moins une option');
         return;
     }
     
@@ -187,7 +183,7 @@ function validateCustomDestination() {
     state.destinations = ['custom'];
 
     if (!state.customDestination) {
-        endJourney("Pas de souci, on reverra la destination au bon moment 😉", false);
+        endJourney(CONFIG.EARLY_EXIT_MESSAGE);
         return;
     }
 
@@ -204,7 +200,8 @@ function showAccommodationScreen() {
                 <a href="${CONFIG.AIRBNB_LINKS[destKey]}" target="_blank" class="accommodation-link">
                     <div class="accommodation-card">
                         <h4>${dest === 'rocamadour' ? 'Rocamadour' : 'Lac du Salagou'}</h4>
-                        <p>Voir les logements →</p>
+                        <p class="accommodation-subtitle">Sélection de logements pour toi</p>
+                        <span class="accommodation-cta">Ouvrir la liste Airbnb</span>
                     </div>
                 </a>
             `;
@@ -212,7 +209,7 @@ function showAccommodationScreen() {
         .join('');
 
     if (state.customDestination) {
-        accommodationList += '<p class="custom-note">Nous vous enverrons des suggestions pour ' + state.customDestination + '</p>';
+        accommodationList += '<p class="custom-note">On te proposera des logements pour ' + state.customDestination + '.</p>';
     }
 
     const accommodationContent = document.getElementById('accommodation-content');
@@ -313,19 +310,14 @@ function displaySummaryProgram() {
 
 // ===== REFUSAL =====
 function refuseIntro() {
-    endJourney(CONFIG.REFUSAL_MESSAGE, true);
+    endJourney(CONFIG.EARLY_EXIT_MESSAGE);
 }
 
-function endJourney(message, allowSubmit) {
+function endJourney(message) {
     const refuseMessage = document.getElementById('refuse-message');
-    const btnSendRefuse = document.getElementById('btn-send-refuse');
 
     if (refuseMessage) {
         refuseMessage.textContent = message;
-    }
-
-    if (btnSendRefuse) {
-        btnSendRefuse.style.display = allowSubmit ? 'inline-flex' : 'none';
     }
 
     showScreen('screen-refuse');
