@@ -61,70 +61,116 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function setupEventListeners() {
     // Screen 1: Introduction
-    document.getElementById('btn-see-proposals').addEventListener('click', () => {
-        showScreen('screen-dates');
-    });
+    const btnSeeProposals = document.getElementById('btn-see-proposals');
+    const btnRefuseIntro = document.getElementById('btn-refuse-intro');
+    
+    if (btnSeeProposals) {
+        btnSeeProposals.addEventListener('click', () => {
+            showScreen('screen-dates');
+        });
+    }
 
-    document.getElementById('btn-refuse-intro').addEventListener('click', refuseIntro);
+    if (btnRefuseIntro) {
+        btnRefuseIntro.addEventListener('click', refuseIntro);
+    }
 
     // Screen 2: Dates
-    document.getElementById('date-custom').addEventListener('change', (e) => {
-        toggleElement('custom-dates-input', e.target.checked);
-    });
+    const dateCustom = document.getElementById('date-custom');
+    if (dateCustom) {
+        dateCustom.addEventListener('change', (e) => {
+            toggleElement('custom-dates-input', e.target.checked);
+        });
+    }
 
-    document.getElementById('btn-back-dates').addEventListener('click', () => {
-        resetDatesScreen();
-        showScreen('screen-intro');
-    });
+    const btnBackDates = document.getElementById('btn-back-dates');
+    if (btnBackDates) {
+        btnBackDates.addEventListener('click', () => {
+            resetDatesScreen();
+            showScreen('screen-intro');
+        });
+    }
 
-    document.getElementById('btn-validate-dates').addEventListener('click', validateDates);
+    const btnValidateDates = document.getElementById('btn-validate-dates');
+    if (btnValidateDates) {
+        btnValidateDates.addEventListener('click', validateDates);
+    }
 
     // Screen 3: Destination
-    document.getElementById('destination-custom').addEventListener('change', (e) => {
-        toggleElement('custom-destination-input', e.target.checked);
-    });
+    const destinationCustom = document.getElementById('destination-custom');
+    if (destinationCustom) {
+        destinationCustom.addEventListener('change', (e) => {
+            toggleElement('custom-destination-input', e.target.checked);
+        });
+    }
 
-    document.getElementById('btn-back-destination').addEventListener('click', () => {
-        resetDestinationScreen();
-        showScreen('screen-dates');
-    });
+    const btnBackDestination = document.getElementById('btn-back-destination');
+    if (btnBackDestination) {
+        btnBackDestination.addEventListener('click', () => {
+            resetDestinationScreen();
+            showScreen('screen-dates');
+        });
+    }
 
-    document.getElementById('btn-validate-destination').addEventListener('click', validateDestination);
+    const btnValidateDestination = document.getElementById('btn-validate-destination');
+    if (btnValidateDestination) {
+        btnValidateDestination.addEventListener('click', validateDestination);
+    }
 
     // Screen 4: Accommodation
-    document.getElementById('btn-back-accommodation').addEventListener('click', () => {
-        showScreen('screen-destination');
-    });
+    const btnBackAccommodation = document.getElementById('btn-back-accommodation');
+    if (btnBackAccommodation) {
+        btnBackAccommodation.addEventListener('click', () => {
+            showScreen('screen-destination');
+        });
+    }
 
-    document.getElementById('btn-accommodation-perfect').addEventListener('click', () => {
-        state.accommodationChosen = true;
-        showSummary();
-    });
+    const btnAccommodationPerfect = document.getElementById('btn-accommodation-perfect');
+    if (btnAccommodationPerfect) {
+        btnAccommodationPerfect.addEventListener('click', () => {
+            state.accommodationChosen = true;
+            showSummary();
+        });
+    }
 
-    document.getElementById('btn-accommodation-issue').addEventListener('click', () => {
-        toggleElement('accommodation-feedback', true);
-    });
+    const btnAccommodationIssue = document.getElementById('btn-accommodation-issue');
+    if (btnAccommodationIssue) {
+        btnAccommodationIssue.addEventListener('click', () => {
+            toggleElement('accommodation-feedback', true);
+        });
+    }
 
-    document.getElementById('btn-update-budget').addEventListener('click', () => {
-        const budgetInput = document.getElementById('budget-input');
-        if (budgetInput.value) {
-            state.budget = parseInt(budgetInput.value);
-            updateBudgetDisplay();
-        }
-    });
+    const btnUpdateBudget = document.getElementById('btn-update-budget');
+    if (btnUpdateBudget) {
+        btnUpdateBudget.addEventListener('click', () => {
+            const budgetInput = document.getElementById('budget-input');
+            if (budgetInput && budgetInput.value) {
+                state.budget = parseInt(budgetInput.value);
+                updateBudgetDisplay();
+            }
+        });
+    }
 
     // Screen 5: Submit
-    document.getElementById('btn-submit').addEventListener('click', submitForm);
-    document.getElementById('btn-send-refuse').addEventListener('click', submitForm);
+    const btnSubmit = document.getElementById('btn-submit');
+    if (btnSubmit) {
+        btnSubmit.addEventListener('click', submitForm);
+    }
+
+    const btnSendRefuse = document.getElementById('btn-send-refuse');
+    if (btnSendRefuse) {
+        btnSendRefuse.addEventListener('click', submitForm);
+    }
 }
 
 // ===== HELPER FUNCTIONS =====
 function toggleElement(elementId, show) {
     const element = document.getElementById(elementId);
-    if (show) {
-        element.classList.remove('hidden');
-    } else {
-        element.classList.add('hidden');
+    if (element) {
+        if (show) {
+            element.classList.remove('hidden');
+        } else {
+            element.classList.add('hidden');
+        }
     }
 }
 
@@ -138,7 +184,8 @@ function validateDates() {
     state.dates = getCheckedValues('date');
     
     if (state.dates.includes('custom')) {
-        state.customDates = document.getElementById('custom-dates-text').value;
+        const customDatesInput = document.getElementById('custom-dates-text');
+        state.customDates = customDatesInput ? customDatesInput.value : '';
         if (!state.customDates) {
             alert('Veuillez indiquer vos disponibilités');
             return;
@@ -157,7 +204,10 @@ function resetDatesScreen() {
     document.querySelectorAll('input[name="date"]').forEach(input => {
         input.checked = false;
     });
-    document.getElementById('custom-dates-text').value = '';
+    const customDatesText = document.getElementById('custom-dates-text');
+    if (customDatesText) {
+        customDatesText.value = '';
+    }
     toggleElement('custom-dates-input', false);
 }
 
@@ -166,7 +216,8 @@ function validateDestination() {
     state.destinations = getCheckedValues('destination');
     
     if (state.destinations.includes('custom')) {
-        state.customDestination = document.getElementById('custom-destination-text').value;
+        const customDestInput = document.getElementById('custom-destination-text');
+        state.customDestination = customDestInput ? customDestInput.value : '';
         if (!state.customDestination) {
             alert('Veuillez indiquer votre suggestion');
             return;
@@ -185,13 +236,16 @@ function resetDestinationScreen() {
     document.querySelectorAll('input[name="destination"]').forEach(input => {
         input.checked = false;
     });
-    document.getElementById('custom-destination-text').value = '';
+    const customDestText = document.getElementById('custom-destination-text');
+    if (customDestText) {
+        customDestText.value = '';
+    }
     toggleElement('custom-destination-input', false);
 }
 
 // ===== SCREEN: ACCOMMODATION =====
 function showAccommodationScreen() {
-    const accommodationList = state.destinations
+    let accommodationList = state.destinations
         .filter(d => d !== 'custom')
         .map(dest => {
             const destKey = dest === 'rocamadour' ? 'rocamadour' : 'salagou';
@@ -210,7 +264,10 @@ function showAccommodationScreen() {
         accommodationList += '<p class="custom-note">Nous vous enverrons des suggestions pour ' + state.customDestination + '</p>';
     }
 
-    document.getElementById('accommodation-content').innerHTML = accommodationList;
+    const accommodationContent = document.getElementById('accommodation-content');
+    if (accommodationContent) {
+        accommodationContent.innerHTML = accommodationList;
+    }
     showScreen('screen-accommodation');
 }
 
@@ -237,7 +294,10 @@ function displaySummaryDates() {
         datesText += (datesText ? ' ou ' : '') + state.customDates;
     }
     
-    document.getElementById('summary-dates').innerHTML = `<p>${datesText || 'Non spécifiées'}</p>`;
+    const summaryDates = document.getElementById('summary-dates');
+    if (summaryDates) {
+        summaryDates.innerHTML = `<p>${datesText || 'Non spécifiées'}</p>`;
+    }
 }
 
 function displaySummaryDestination() {
@@ -255,12 +315,19 @@ function displaySummaryDestination() {
         destText += (destText ? ' ou ' : '') + state.customDestination;
     }
     
-    document.getElementById('summary-destination').innerHTML = `<p>${destText || 'Non spécifiée'}</p>`;
+    const summaryDestination = document.getElementById('summary-destination');
+    if (summaryDestination) {
+        summaryDestination.innerHTML = `<p>${destText || 'Non spécifiée'}</p>`;
+    }
 }
 
 function displaySummaryAccommodation() {
-    const feedback = document.getElementById('accommodation-text').value || 'Logement validé';
-    document.getElementById('summary-accommodation').innerHTML = `<p>${feedback}</p>`;
+    const accommodationText = document.getElementById('accommodation-text');
+    const feedback = accommodationText ? accommodationText.value : 'Logement validé';
+    const summaryAccommodation = document.getElementById('summary-accommodation');
+    if (summaryAccommodation) {
+        summaryAccommodation.innerHTML = `<p>${feedback || 'Logement validé'}</p>`;
+    }
 }
 
 function displaySummaryProgram() {
@@ -289,19 +356,28 @@ function displaySummaryProgram() {
         programHTML += `<p><em>Le programme sera confirmé selon les disponibilités pour ${state.customDestination}</em></p>`;
     }
     
-    document.getElementById('summary-program').innerHTML = programHTML || '<p>Programme à définir</p>';
+    const summaryProgram = document.getElementById('summary-program');
+    if (summaryProgram) {
+        summaryProgram.innerHTML = programHTML || '<p>Programme à définir</p>';
+    }
 }
 
 function updateBudgetDisplay() {
     const budgetText = state.budget > 0 ? state.budget + ' €' : 'Non défini';
-    document.getElementById('budget-display').textContent = budgetText;
+    const budgetDisplay = document.getElementById('budget-display');
+    if (budgetDisplay) {
+        budgetDisplay.textContent = budgetText;
+    }
 }
 
 // ===== REFUSAL =====
 function refuseIntro() {
     const messages = CONFIG.REFUSAL_MESSAGES;
     const randomMessage = messages[Math.floor(Math.random() * messages.length)];
-    document.getElementById('refuse-message').textContent = randomMessage;
+    const refuseMessage = document.getElementById('refuse-message');
+    if (refuseMessage) {
+        refuseMessage.textContent = randomMessage;
+    }
     
     showScreen('screen-refuse');
 }
@@ -311,14 +387,17 @@ function submitForm() {
     const summary = compileSummary();
     
     // Update form hidden field
-    document.getElementById('form-message').value = summary;
+    const formMessage = document.getElementById('form-message');
+    if (formMessage) {
+        formMessage.value = summary;
+    }
     
     // Update email from CONFIG
     const form = document.getElementById('hidden-form');
-    form.action = `https://formsubmit.co/${CONFIG.EMAIL}`;
-    
-    // Submit
-    form.submit();
+    if (form) {
+        form.action = `https://formsubmit.co/${CONFIG.EMAIL}`;
+        form.submit();
+    }
 }
 
 function compileSummary() {
@@ -347,8 +426,9 @@ function compileSummary() {
     
     // Logement feedback
     summary += '🏠 LOGEMENT:\n';
-    const accommodationText = document.getElementById('accommodation-text').value || 'Validé';
-    summary += accommodationText + '\n\n';
+    const accommodationText = document.getElementById('accommodation-text');
+    const accommodationFeedback = accommodationText ? accommodationText.value : 'Validé';
+    summary += (accommodationFeedback || 'Validé') + '\n\n';
     
     // Budget
     summary += '💰 BUDGET: ';
@@ -373,54 +453,4 @@ function compileSummary() {
     
     return summary;
 }
-
-function setupEventListeners() {
-    // Add event listeners for introduction buttons
-    document.getElementById("seePropositions").addEventListener("click", showDateSelection);
-    document.getElementById("noThanks").addEventListener("click", handleNoThanks);
-    
-    // Add event listeners for date selection
-    document.getElementById("dateSelectionForm").addEventListener("submit", handleDateSelection);
-    
-    // Add event listeners for destination selection
-    document.getElementById("destinationSelectionForm").addEventListener("submit", handleDestinationSelection);
-    
-    // Add event listeners for logement selection
-    document.getElementById("logementSelectionForm").addEventListener("submit", handleLogementSelection);
-    
-    // Add event listener for summary submission
-    document.getElementById("summaryForm").addEventListener("submit", handleSummarySubmission);
-}
-
-function showDateSelection() {
-    // Logic to display date selection screen
-}
-
-function handleNoThanks() {
-    // Logic to handle "No thanks" response
-    alert("Pas de souci, on peut toujours en parler plus tard !");
-}
-
-function handleDateSelection(event) {
-    event.preventDefault();
-    // Logic to handle date selection
-}
-
-function handleDestinationSelection(event) {
-    event.preventDefault();
-    // Logic to handle destination selection
-}
-
-function handleLogementSelection(event) {
-    event.preventDefault();
-    // Logic to handle logement selection
-}
-
-function handleSummarySubmission(event) {
-    event.preventDefault();
-    // Logic to handle summary submission and send email via Formsubmit
-}
-
-function sendEmail() {
-    // Logic to send email using Formsubmit
 }
