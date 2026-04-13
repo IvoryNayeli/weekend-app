@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Notre Week-end</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -12,7 +15,7 @@
         <div id="screen-intro" class="screen active">
             <div class="container">
                 <h1>En attendant notre semaine de vacances dans les Alpes...</h1>
-                <p class="intro-text">Je te propose de partir en week-end.</p>
+                <p class="intro-text">Je te propose de partir en week-end !</p>
                 <div class="buttons">
                     <button id="btn-see-proposals" class="btn btn-primary">Voir les propositions</button>
                     <button id="btn-refuse-intro" class="btn btn-secondary">Non merci</button>
@@ -24,7 +27,6 @@
         <div id="screen-dates" class="screen">
             <div class="container">
                 <div class="header">
-                    <button id="btn-back-dates" class="btn-back">← Retour</button>
                     <h2>Quelles dates te conviendraient ?</h2>
                 </div>
                 <div class="dates-options">
@@ -46,7 +48,7 @@
                     </label>
                 </div>
                 <div id="custom-dates-input" class="custom-input hidden">
-                    <textarea id="custom-dates-text" placeholder="Quelles dates te conviendraient ?"></textarea>
+                    <textarea id="custom-dates-text" placeholder="D'autres dates à proposer peut-être ?"></textarea>
                 </div>
                 <div class="buttons">
                     <button id="btn-validate-dates" class="btn btn-primary">Valider</button>
@@ -58,39 +60,32 @@
         <div id="screen-destination" class="screen">
             <div class="container">
                 <div class="header">
-                    <button id="btn-back-destination" class="btn-back">← Retour</button>
                     <h2>Choisissez la destination</h2>
                 </div>
+                <p class="destination-headline">Choisis ton ambiance du week-end 💜</p>
                 <div class="destination-cards">
-                    <label class="card-option">
-                        <input type="checkbox" name="destination" value="rocamadour">
+                    <button class="destination-button" type="button" data-destination="rocamadour">
                         <div class="card">
-                            <div class="card-image" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"></div>
+                            <img class="card-image" src="assets/destinations/rocamadour.jpg" alt="Rocamadour">
                             <div class="card-content">
                                 <h3>Rocamadour</h3>
                             </div>
                         </div>
-                    </label>
-                    <label class="card-option">
-                        <input type="checkbox" name="destination" value="salagou">
+                    </button>
+                    <button class="destination-button" type="button" data-destination="salagou">
                         <div class="card">
-                            <div class="card-image" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);"></div>
+                            <img class="card-image" src="assets/destinations/lac-du-salagou.jpg" alt="Lac du Salagou">
                             <div class="card-content">
                                 <h3>Lac du Salagou</h3>
                             </div>
                         </div>
-                    </label>
+                    </button>
                 </div>
-                <label class="checkbox-option">
-                    <input type="checkbox" name="destination" value="custom" id="destination-custom">
-                    <span>Aucune destination ne me convient</span>
-                </label>
+                <button id="btn-destination-none" class="btn btn-secondary" type="button">Aucune destination ne me convient</button>
                 <div id="custom-destination-input" class="custom-input hidden">
-                    <textarea id="custom-destination-text" placeholder="Qu'est-ce qui te ferait envie à la place ?"></textarea>
+                    <textarea id="custom-destination-text" placeholder="D'autres dates à proposer peut-être ?"></textarea>
                     <p class="note">Le choix pourra être ajusté en fonction de la météo</p>
-                </div>
-                <div class="buttons">
-                    <button id="btn-validate-destination" class="btn btn-primary">Valider</button>
+                    <button id="btn-validate-custom-destination" class="btn btn-primary" type="button">Valider</button>
                 </div>
             </div>
         </div>
@@ -99,7 +94,6 @@
         <div id="screen-accommodation" class="screen">
             <div class="container">
                 <div class="header">
-                    <button id="btn-back-accommodation" class="btn-back">← Retour</button>
                     <h2>Logement</h2>
                 </div>
                 <p class="accommodation-intro">Découvrez nos suggestions sur Airbnb</p>
@@ -136,14 +130,6 @@
                     <div class="summary-section">
                         <h3>🗓️ Programme</h3>
                         <div id="summary-program"></div>
-                    </div>
-                    <div class="summary-section">
-                        <h3>💰 Budget</h3>
-                        <div class="budget-edit">
-                            <input type="number" id="budget-input" placeholder="Budget en €">
-                            <button id="btn-update-budget" class="btn-small">Mettre à jour</button>
-                        </div>
-                        <p id="budget-display"></p>
                     </div>
                 </div>
                 <div class="buttons">

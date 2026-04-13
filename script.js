@@ -4,11 +4,7 @@ const CONFIG = {
     EMAIL: "your-email@example.com",
     
     // Messages personnalisés
-    REFUSAL_MESSAGES: [
-        "Je comprends, ce n'est pas grave ! 😊",
-        "Pas de problème, on trouvera une autre occasion !",
-        "Pas de souci, bisous ! 💙"
-    ],
+    REFUSAL_MESSAGE: "Alors dans ce cas, j'attendrai patiemment les vcances d'août 😉",
     
     // Programmes selon destination
     PROGRAMS: {
@@ -38,9 +34,7 @@ let state = {
     customDates: "",
     destinations: [],
     customDestination: "",
-    accommodationFeedback: "",
-    budget: 0,
-    accommodationChosen: false
+    accommodationFeedback: ""
 };
 
 // ===== SCREEN NAVIGATION =====
@@ -82,71 +76,40 @@ function setupEventListeners() {
         });
     }
 
-    const btnBackDates = document.getElementById('btn-back-dates');
-    if (btnBackDates) {
-        btnBackDates.addEventListener('click', () => {
-            resetDatesScreen();
-            showScreen('screen-intro');
-        });
-    }
-
     const btnValidateDates = document.getElementById('btn-validate-dates');
     if (btnValidateDates) {
         btnValidateDates.addEventListener('click', validateDates);
     }
 
     // Screen 3: Destination
-    const destinationCustom = document.getElementById('destination-custom');
-    if (destinationCustom) {
-        destinationCustom.addEventListener('change', (e) => {
-            toggleElement('custom-destination-input', e.target.checked);
+    document.querySelectorAll('.destination-button').forEach((button) => {
+        button.addEventListener('click', () => {
+            selectPresetDestination(button.dataset.destination);
+        });
+    });
+
+    const btnDestinationNone = document.getElementById('btn-destination-none');
+    if (btnDestinationNone) {
+        btnDestinationNone.addEventListener('click', () => {
+            toggleElement('custom-destination-input', true);
         });
     }
 
-    const btnBackDestination = document.getElementById('btn-back-destination');
-    if (btnBackDestination) {
-        btnBackDestination.addEventListener('click', () => {
-            resetDestinationScreen();
-            showScreen('screen-dates');
-        });
-    }
-
-    const btnValidateDestination = document.getElementById('btn-validate-destination');
-    if (btnValidateDestination) {
-        btnValidateDestination.addEventListener('click', validateDestination);
+    const btnValidateCustomDestination = document.getElementById('btn-validate-custom-destination');
+    if (btnValidateCustomDestination) {
+        btnValidateCustomDestination.addEventListener('click', validateCustomDestination);
     }
 
     // Screen 4: Accommodation
-    const btnBackAccommodation = document.getElementById('btn-back-accommodation');
-    if (btnBackAccommodation) {
-        btnBackAccommodation.addEventListener('click', () => {
-            showScreen('screen-destination');
-        });
-    }
-
     const btnAccommodationPerfect = document.getElementById('btn-accommodation-perfect');
     if (btnAccommodationPerfect) {
-        btnAccommodationPerfect.addEventListener('click', () => {
-            state.accommodationChosen = true;
-            showSummary();
-        });
+        btnAccommodationPerfect.addEventListener('click', showSummary);
     }
 
     const btnAccommodationIssue = document.getElementById('btn-accommodation-issue');
     if (btnAccommodationIssue) {
         btnAccommodationIssue.addEventListener('click', () => {
             toggleElement('accommodation-feedback', true);
-        });
-    }
-
-    const btnUpdateBudget = document.getElementById('btn-update-budget');
-    if (btnUpdateBudget) {
-        btnUpdateBudget.addEventListener('click', () => {
-            const budgetInput = document.getElementById('budget-input');
-            if (budgetInput && budgetInput.value) {
-                state.budget = parseInt(budgetInput.value);
-                updateBudgetDisplay();
-            }
         });
     }
 
@@ -187,7 +150,7 @@ function validateDates() {
         const customDatesInput = document.getElementById('custom-dates-text');
         state.customDates = customDatesInput ? customDatesInput.value : '';
         if (!state.customDates) {
-            alert('Veuillez indiquer vos disponibilités');
+            endJourney("Pas de souci, on ajustera les dates plus tard 😉", false);
             return;
         }
     }
@@ -212,35 +175,23 @@ function resetDatesScreen() {
 }
 
 // ===== SCREEN: DESTINATION =====
-function validateDestination() {
-    state.destinations = getCheckedValues('destination');
-    
-    if (state.destinations.includes('custom')) {
-        const customDestInput = document.getElementById('custom-destination-text');
-        state.customDestination = customDestInput ? customDestInput.value : '';
-        if (!state.customDestination) {
-            alert('Veuillez indiquer votre suggestion');
-            return;
-        }
-    }
-    
-    if (state.destinations.length === 0) {
-        alert('Veuillez sélectionner au moins une destination');
-        return;
-    }
-    
+function selectPresetDestination(destination) {
+    state.destinations = [destination];
+    state.customDestination = '';
     showAccommodationScreen();
 }
 
-function resetDestinationScreen() {
-    document.querySelectorAll('input[name="destination"]').forEach(input => {
-        input.checked = false;
-    });
-    const customDestText = document.getElementById('custom-destination-text');
-    if (customDestText) {
-        customDestText.value = '';
+function validateCustomDestination() {
+    const customDestInput = document.getElementById('custom-destination-text');
+    state.customDestination = customDestInput ? customDestInput.value.trim() : '';
+    state.destinations = ['custom'];
+
+    if (!state.customDestination) {
+        endJourney("Pas de souci, on reverra la destination au bon moment 😉", false);
+        return;
     }
-    toggleElement('custom-destination-input', false);
+
+    showAccommodationScreen();
 }
 
 // ===== SCREEN: ACCOMMODATION =====
@@ -277,8 +228,6 @@ function showSummary() {
     displaySummaryDestination();
     displaySummaryAccommodation();
     displaySummaryProgram();
-    updateBudgetDisplay();
-    
     showScreen('screen-summary');
 }
 
@@ -362,23 +311,23 @@ function displaySummaryProgram() {
     }
 }
 
-function updateBudgetDisplay() {
-    const budgetText = state.budget > 0 ? state.budget + ' €' : 'Non défini';
-    const budgetDisplay = document.getElementById('budget-display');
-    if (budgetDisplay) {
-        budgetDisplay.textContent = budgetText;
-    }
-}
-
 // ===== REFUSAL =====
 function refuseIntro() {
-    const messages = CONFIG.REFUSAL_MESSAGES;
-    const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+    endJourney(CONFIG.REFUSAL_MESSAGE, true);
+}
+
+function endJourney(message, allowSubmit) {
     const refuseMessage = document.getElementById('refuse-message');
+    const btnSendRefuse = document.getElementById('btn-send-refuse');
+
     if (refuseMessage) {
-        refuseMessage.textContent = randomMessage;
+        refuseMessage.textContent = message;
     }
-    
+
+    if (btnSendRefuse) {
+        btnSendRefuse.style.display = allowSubmit ? 'inline-flex' : 'none';
+    }
+
     showScreen('screen-refuse');
 }
 
@@ -429,10 +378,6 @@ function compileSummary() {
     const accommodationText = document.getElementById('accommodation-text');
     const accommodationFeedback = accommodationText ? accommodationText.value : 'Validé';
     summary += (accommodationFeedback || 'Validé') + '\n\n';
-    
-    // Budget
-    summary += '💰 BUDGET: ';
-    summary += (state.budget > 0 ? state.budget + ' €' : 'Non défini') + '\n\n';
     
     // Program
     summary += '🗓️ PROGRAMME ENVISAGÉ:\n';
