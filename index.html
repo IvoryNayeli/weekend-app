@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notre Week-end</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app" class="app">
+        <!-- Écran 1: Introduction -->
+        <div id="screen-intro" class="screen active">
+            <div class="container">
+                <h1>En attendant notre semaine de vacances dans les Alpes...</h1>
+                <p class="intro-text">Je te propose de partir en week-end.</p>
+                <div class="buttons">
+                    <button id="btn-see-proposals" class="btn btn-primary">Voir les propositions</button>
+                    <button id="btn-refuse-intro" class="btn btn-secondary">Non merci</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Écran 2: Choix des dates -->
+        <div id="screen-dates" class="screen">
+            <div class="container">
+                <div class="header">
+                    <button id="btn-back-dates" class="btn-back">← Retour</button>
+                    <h2>Quelles dates te conviendraient ?</h2>
+                </div>
+                <div class="dates-options">
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="date" value="15-17-mai">
+                        <span>15–17 mai</span>
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="date" value="12-14-juin">
+                        <span>12–14 juin</span>
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="date" value="26-28-juin">
+                        <span>26–28 juin</span>
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="date" value="custom" id="date-custom">
+                        <span>Aucune date ne me convient</span>
+                    </label>
+                </div>
+                <div id="custom-dates-input" class="custom-input hidden">
+                    <textarea id="custom-dates-text" placeholder="Quelles dates te conviendraient ?"></textarea>
+                </div>
+                <div class="buttons">
+                    <button id="btn-validate-dates" class="btn btn-primary">Valider</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Écran 3: Choix de la destination -->
+        <div id="screen-destination" class="screen">
+            <div class="container">
+                <div class="header">
+                    <button id="btn-back-destination" class="btn-back">← Retour</button>
+                    <h2>Choisissez la destination</h2>
+                </div>
+                <div class="destination-cards">
+                    <label class="card-option">
+                        <input type="checkbox" name="destination" value="rocamadour">
+                        <div class="card">
+                            <div class="card-image" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"></div>
+                            <div class="card-content">
+                                <h3>Rocamadour</h3>
+                            </div>
+                        </div>
+                    </label>
+                    <label class="card-option">
+                        <input type="checkbox" name="destination" value="salagou">
+                        <div class="card">
+                            <div class="card-image" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);"></div>
+                            <div class="card-content">
+                                <h3>Lac du Salagou</h3>
+                            </div>
+                        </div>
+                    </label>
+                </div>
+                <label class="checkbox-option">
+                    <input type="checkbox" name="destination" value="custom" id="destination-custom">
+                    <span>Aucune destination ne me convient</span>
+                </label>
+                <div id="custom-destination-input" class="custom-input hidden">
+                    <textarea id="custom-destination-text" placeholder="Qu'est-ce qui te ferait envie à la place ?"></textarea>
+                    <p class="note">Le choix pourra être ajusté en fonction de la météo</p>
+                </div>
+                <div class="buttons">
+                    <button id="btn-validate-destination" class="btn btn-primary">Valider</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Écran 4: Choix du logement -->
+        <div id="screen-accommodation" class="screen">
+            <div class="container">
+                <div class="header">
+                    <button id="btn-back-accommodation" class="btn-back">← Retour</button>
+                    <h2>Logement</h2>
+                </div>
+                <p class="accommodation-intro">Découvrez nos suggestions sur Airbnb</p>
+                <div id="accommodation-content"></div>
+                <div class="buttons">
+                    <button id="btn-accommodation-perfect" class="btn btn-primary">C'est parfait</button>
+                    <button id="btn-accommodation-issue" class="btn btn-secondary">Quelque chose ne me convient pas</button>
+                </div>
+                <div id="accommodation-feedback" class="custom-input hidden">
+                    <textarea id="accommodation-text" placeholder="Qu'est-ce qui ne te convient pas ?"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- Écran 5: Récapitulatif -->
+        <div id="screen-summary" class="screen">
+            <div class="container">
+                <div class="header">
+                    <h2>Récapitulatif</h2>
+                </div>
+                <div class="summary-content">
+                    <div class="summary-section">
+                        <h3>📅 Dates</h3>
+                        <div id="summary-dates"></div>
+                    </div>
+                    <div class="summary-section">
+                        <h3>📍 Destination</h3>
+                        <div id="summary-destination"></div>
+                    </div>
+                    <div class="summary-section">
+                        <h3>🏠 Logement</h3>
+                        <div id="summary-accommodation"></div>
+                    </div>
+                    <div class="summary-section">
+                        <h3>🗓️ Programme</h3>
+                        <div id="summary-program"></div>
+                    </div>
+                    <div class="summary-section">
+                        <h3>💰 Budget</h3>
+                        <div class="budget-edit">
+                            <input type="number" id="budget-input" placeholder="Budget en €">
+                            <button id="btn-update-budget" class="btn-small">Mettre à jour</button>
+                        </div>
+                        <p id="budget-display"></p>
+                    </div>
+                </div>
+                <div class="buttons">
+                    <button id="btn-submit" class="btn btn-primary">Envoyer le récapitulatif</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Écran de refus -->
+        <div id="screen-refuse" class="screen">
+            <div class="container">
+                <div class="message-refuse">
+                    <p id="refuse-message"></p>
+                    <button id="btn-send-refuse" class="btn btn-primary">Envoyer le récapitulatif par email</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Formulaire caché pour FormSubmit -->
+    <form id="hidden-form" action="https://formsubmit.co/your-email@example.com" method="POST" style="display: none;">
+        <textarea name="message" id="form-message"></textarea>
+        <input type="hidden" name="_captcha" value="false">
+        <input type="hidden" name="_subject" value="Proposition week-end">
+    </form>
+
+    <script src="script.js"></script>
+</body>
+</html>
