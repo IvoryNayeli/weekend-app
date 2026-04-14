@@ -1,4 +1,5 @@
 const CONFIG = {
+    ADMIN_EMAIL: "coralieludwig@outlook.fr",
     AIRBNB_LINKS: {
         rocamadour: "https://www.airbnb.fr/wishlists/invite/608f9688-9c16-48c2-9b1b-6f8586718153?viralityEntryPoint=8&s=76",
         salagou: "https://www.airbnb.fr/wishlists/invite/abca9b48-7946-4378-8de0-a70e482e307c?viralityEntryPoint=8&s=76",
@@ -67,6 +68,7 @@ const CONFIG = {
                     "Plage",
                     "Fête foraine",
                     "Ballade en vélo",
+                    "Manger une glace au bord de l'eau",
                     "Padel avec ton ami Rémi (l'appât)"
                 ]
             },
@@ -111,6 +113,7 @@ document.addEventListener("DOMContentLoaded", () => {
     setupMenu();
     setupOffers();
     setupFlow();
+    setupBookingsActions();
     ensureSeedBooking();
     renderBookings();
 });
@@ -152,12 +155,12 @@ function setupMenu() {
     }
 }
 
-function navigateTo(viewName) {
-    switchView(viewName);
+function navigateTo(viewName, options = {}) {
+    switchView(viewName, options);
     closeMobileMenu();
 }
 
-function switchView(viewName) {
+function switchView(viewName, options = {}) {
     document.querySelectorAll(".view").forEach((view) => view.classList.remove("active"));
     document.querySelectorAll(".menu-link").forEach((btn) => btn.classList.remove("active"));
 
@@ -172,7 +175,13 @@ function switchView(viewName) {
     }
 
     if (viewName === "bookings") {
-        renderBookings();
+        renderBookings(Boolean(options.focusLastSaved));
+    }
+
+    if (targetView && !options.focusLastSaved) {
+        requestAnimationFrame(() => {
+            targetView.scrollIntoView({ behavior: "smooth", block: "start" });
+        });
     }
 }
 
@@ -306,6 +315,13 @@ function setupFlow() {
     }
 }
 
+function setupBookingsActions() {
+    const submitButton = document.getElementById("btn-submit-bookings");
+    if (submitButton) {
+        submitButton.addEventListener("click", submitBookingsToAdministrator);
+    }
+}
+
 function revealStep(stepId) {
     const el = document.getElementById(stepId);
     if (el) {
@@ -412,8 +428,7 @@ function saveCurrentBooking() {
     localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(bookings));
     state.lastSavedBookingId = bookingId;
     resetCurrentJourney();
-    renderBookings();
-    navigateTo("bookings");
+    navigateTo("bookings", { focusLastSaved: true });
 }
 
 function createBookingId() {
@@ -527,7 +542,7 @@ function getBookings() {
     }
 }
 
-function renderBookings() {
+function renderBookings(focusLastSaved = false) {
     const wrap = document.getElementById("bookings-list");
     if (!wrap) {
         return;
@@ -565,7 +580,7 @@ function renderBookings() {
             card.appendChild(actions);
         }
 
-        if (state.lastSavedBookingId && booking.id === state.lastSavedBookingId) {
+        if (focusLastSaved && state.lastSavedBookingId && booking.id === state.lastSavedBookingId) {
             card.classList.add("booking-card-focus");
             focusedCard = card;
         }
@@ -577,7 +592,42 @@ function renderBookings() {
         requestAnimationFrame(() => {
             focusedCard.scrollIntoView({ behavior: "smooth", block: "center" });
         });
+        state.lastSavedBookingId = null;
     }
+}
+
+function submitBookingsToAdministrator() {
+    const bookings = getBookings();
+    if (bookings.length === 0) {
+        alert("Aucune réservation à envoyer pour le moment.");
+        return;
+    }
+
+    const subject = "Récapitulatif des réservations Escapades";
+    const body = buildBookingsEmailBody(bookings);
+    window.location.href = `mailto:${CONFIG.ADMIN_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+}
+
+function buildBookingsEmailBody(bookings) {
+    const intro = [
+        "Bonjour,",
+        "",
+        "Voici le récapitulatif des réservations :",
+        ""
+    ];
+
+    const details = bookings.map((booking, index) => {
+        return [
+            `${index + 1}. ${booking.destination}`,
+            `Type : ${booking.type}`,
+            `Dates : ${booking.dates.join(", ")}`,
+            `Programme : ${booking.program.join(" | ")}`,
+            `Logement : ${booking.accommodation}`,
+            ""
+        ].join("\n");
+    });
+
+    return [...intro, ...details, "Merci."].join("\n");
 }
 
 function isProtectedBooking(booking) {

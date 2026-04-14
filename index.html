@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=20260414-13">
+    <link rel="stylesheet" href="style.css?v=20260414-14">
 </head>
 <body>
     <header class="topbar">
@@ -37,7 +37,7 @@
             <article class="hero">
                 <div class="hero-overlay"></div>
                 <div class="hero-content">
-                    <h1 id="home-title">Cap sur de nouvelles aventures</h1>
+                    <h1 id="home-title">De nouvelles aventures ?</h1>
                     <p class="hero-subtitle">Avec le retour des beaux jours, viennent aussi les envies d'escapades. J'ai des propositions à te faire !</p>
                     <button id="btn-home-offers" class="btn btn-primary">Voir les offres</button>
                 </div>
@@ -46,7 +46,7 @@
                 <div class="hero-overlay"></div>
                 <div class="hero-content">
                     <h2 style="font-size: 2.5rem; line-height: 1.15; margin-bottom: 18px; margin-top: 0;">Consulte tes réservations</h2>
-                    <p class="hero-subtitle">Retrouve tous tes séjours réservés et gère tes aventures.</p>
+                    <p class="hero-subtitle">Retrouve tous tes séjours enregistrés.</p>
                     <button id="btn-home-bookings" class="btn btn-primary" type="button" data-view="bookings">Mes réservations</button>
                 </div>
             </article>
@@ -113,9 +113,12 @@
         <section id="view-bookings" class="view" aria-labelledby="bookings-title">
             <h2 id="bookings-title" class="section-title">Mes réservations</h2>
             <div id="bookings-list" class="bookings-list"></div>
+            <div class="bookings-submit">
+                <button id="btn-submit-bookings" class="btn btn-primary" type="button">Soumettre mes réservations à l'administrateur</button>
+            </div>
         </section>
     </main>
 
-    <script src="script.js?v=20260414-13"></script>
+    <script src="script.js?v=20260414-14"></script>
 </body>
 </html>

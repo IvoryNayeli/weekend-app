@@ -387,6 +387,12 @@ textarea {
     gap: 12px;
 }
 
+.bookings-submit {
+    margin-top: 18px;
+    display: flex;
+    justify-content: flex-start;
+}
+
 .booking-card {
     background: var(--white);
     border: 1px solid var(--line);
