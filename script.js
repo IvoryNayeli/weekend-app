@@ -16,6 +16,15 @@ const CONFIG = {
             "Pause plage"
         ]
     },
+    REQUIRED_PROGRAMS: {
+        rocamadour: [
+            "Visite de Rocamadour",
+            "Gouffre de Padirac"
+        ],
+        salagou: [
+            "Randonnée autour du lac"
+        ]
+    },
     STORAGE_KEY: "weekend_bookings"
 };
 
@@ -24,6 +33,7 @@ const state = {
     selectedDates: [],
     selectedDestination: "",
     programItems: [],
+    requiredProgramItems: [],
     accommodationNote: "",
     offerLocked: false
 };
@@ -168,6 +178,7 @@ function setupFlow() {
             }
             state.selectedDestination = destination;
             state.programItems = [...CONFIG.PROGRAMS[destination]];
+            state.requiredProgramItems = [...(CONFIG.REQUIRED_PROGRAMS[destination] || [])];
             renderProgram();
             revealStep("flow-program");
         });
@@ -231,21 +242,34 @@ function renderProgram() {
 
     list.innerHTML = "";
     state.programItems.forEach((item, index) => {
+        const isRequired = state.requiredProgramItems.includes(item);
         const li = document.createElement("li");
         const label = document.createElement("span");
         label.textContent = item;
-
-        const removeBtn = document.createElement("button");
-        removeBtn.className = "item-remove";
-        removeBtn.type = "button";
-        removeBtn.textContent = "Supprimer";
-        removeBtn.addEventListener("click", () => {
-            state.programItems.splice(index, 1);
-            renderProgram();
-        });
-
         li.appendChild(label);
-        li.appendChild(removeBtn);
+
+        if (isRequired) {
+            const requiredBadge = document.createElement("span");
+            requiredBadge.className = "item-required";
+            requiredBadge.textContent = "Obligatoire";
+            li.appendChild(requiredBadge);
+        }
+
+        if (!isRequired) {
+            const removeBtn = document.createElement("button");
+            removeBtn.className = "item-remove";
+            removeBtn.type = "button";
+            removeBtn.textContent = "Supprimer";
+            removeBtn.addEventListener("click", () => {
+                if (state.requiredProgramItems.includes(item)) {
+                    return;
+                }
+                state.programItems.splice(index, 1);
+                renderProgram();
+            });
+            li.appendChild(removeBtn);
+        }
+
         list.appendChild(li);
     });
 }
@@ -306,6 +330,7 @@ function resetCurrentJourney() {
     state.selectedDates = [];
     state.selectedDestination = "";
     state.programItems = [];
+    state.requiredProgramItems = [];
     state.accommodationNote = "";
     state.offerLocked = false;
 

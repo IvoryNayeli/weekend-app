@@ -248,6 +248,10 @@ body {
     border-radius: 10px;
 }
 
+.date-value {
+    white-space: nowrap;
+}
+
 .destination-stack {
     display: grid;
     gap: 12px;
@@ -409,6 +413,17 @@ textarea {
     font-weight: 700;
     padding: 6px 8px;
     cursor: pointer;
+}
+
+.item-required {
+    margin-left: auto;
+    font-size: 0.76rem;
+    font-weight: 700;
+    padding: 5px 8px;
+    border-radius: 999px;
+    color: var(--ink);
+    background: var(--soft-2);
+    border: 1px solid var(--line);
 }
 
 .hidden {
