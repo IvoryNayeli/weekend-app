@@ -5,21 +5,21 @@
 }
 
 :root {
-    --bg: #f2f8f3;
-    --ink: #173329;
-    --muted: #48675b;
-    --brand: #3ea974;
-    --brand-dark: #2e7f57;
+    --bg: #ecf7ef;
+    --ink: #123027;
+    --muted: #3f6255;
+    --brand: #2fa66f;
+    --brand-dark: #1f7f52;
     --white: #ffffff;
-    --line: #d8e9dd;
-    --shadow: 0 20px 40px rgba(26, 72, 52, 0.14);
+    --line: #cde4d4;
+    --shadow: 0 20px 40px rgba(22, 84, 56, 0.16);
 }
 
 body {
     font-family: "Outfit", sans-serif;
     color: var(--ink);
-    background: radial-gradient(circle at 10% 10%, #d7efdf 0%, transparent 35%),
-        radial-gradient(circle at 90% 25%, #e8f5e8 0%, transparent 28%),
+    background: radial-gradient(circle at 10% 10%, #c8ebd3 0%, transparent 35%),
+        radial-gradient(circle at 90% 25%, #dcf2e2 0%, transparent 28%),
         var(--bg);
     min-height: 100vh;
 }
@@ -28,7 +28,7 @@ body {
     position: sticky;
     top: 0;
     z-index: 10;
-    background: rgba(255, 255, 255, 0.88);
+    background: rgba(240, 252, 245, 0.92);
     backdrop-filter: blur(10px);
     border-bottom: 1px solid var(--line);
     padding: 14px 22px;
@@ -73,6 +73,7 @@ body {
 .menu-link.active {
     background: var(--brand);
     color: var(--white);
+    box-shadow: 0 8px 20px rgba(47, 166, 111, 0.28);
 }
 
 .shell {
@@ -95,14 +96,14 @@ body {
     border-radius: 26px;
     overflow: hidden;
     box-shadow: var(--shadow);
-    background: linear-gradient(130deg, rgba(62, 169, 116, 0.88), rgba(46, 127, 87, 0.85)),
+    background: linear-gradient(130deg, rgba(47, 166, 111, 0.9), rgba(31, 127, 82, 0.9)),
         url("assets/destinations/lac-du-salagou.jpg") center/cover;
 }
 
 .hero-overlay {
     position: absolute;
     inset: 0;
-    background: linear-gradient(to right, rgba(10, 12, 28, 0.5), rgba(10, 12, 28, 0.12));
+    background: linear-gradient(to right, rgba(9, 36, 24, 0.52), rgba(9, 36, 24, 0.2));
 }
 
 .hero-content {
@@ -151,7 +152,7 @@ body {
 
 .choice-card.selected {
     border-color: var(--brand);
-    background: #f2f1ff;
+    background: #e4f5ea;
 }
 
 .fine-print {
@@ -286,7 +287,7 @@ textarea {
 .summary-box {
     border: 1px solid var(--line);
     border-radius: 12px;
-    background: #fafbff;
+    background: #f4fbf6;
     padding: 14px;
     margin-bottom: 12px;
     line-height: 1.5;
@@ -329,7 +330,7 @@ textarea {
 }
 
 .btn-secondary {
-    background: #e7f6ee;
+    background: #dbf2e3;
     color: var(--brand-dark);
 }
 
