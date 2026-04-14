@@ -123,22 +123,14 @@ function setupOffers() {
                 state.selectedOffers.push(offerKey);
                 button.classList.add("selected");
             }
+            if (state.selectedOffers.length > 0) {
+                revealStep("flow-dates");
+            }
         });
     });
 }
 
 function setupFlow() {
-    const btnToDates = document.getElementById("btn-to-dates");
-    if (btnToDates) {
-        btnToDates.addEventListener("click", () => {
-            if (state.selectedOffers.length === 0) {
-                alert("Choisis au moins un type de sejour.");
-                return;
-            }
-            revealStep("flow-dates");
-        });
-    }
-
     const btnValidateDates = document.getElementById("btn-validate-dates");
     if (btnValidateDates) {
         btnValidateDates.addEventListener("click", () => {
@@ -319,15 +311,49 @@ function renderBookings() {
     const bookings = getBookings();
     wrap.innerHTML = "";
 
-    bookings.forEach((booking) => {
+    bookings.forEach((booking, index) => {
         const card = document.createElement("article");
         card.className = "booking-card";
+        const canDelete = !isProtectedBooking(booking);
         card.innerHTML = `
             <h3>${booking.destination}</h3>
             <p class="booking-meta">${booking.dates.join(", ")} • ${booking.type}</p>
             <p><strong>Programme:</strong> ${booking.program.join(" | ")}</p>
             <p><strong>Logement:</strong> ${booking.accommodation}</p>
         `;
+
+        if (canDelete) {
+            const actions = document.createElement("div");
+            actions.className = "booking-actions";
+
+            const deleteBtn = document.createElement("button");
+            deleteBtn.type = "button";
+            deleteBtn.className = "btn btn-delete";
+            deleteBtn.textContent = "Supprimer";
+            deleteBtn.addEventListener("click", () => {
+                deleteBooking(index);
+            });
+
+            actions.appendChild(deleteBtn);
+            card.appendChild(actions);
+        }
+
         wrap.appendChild(card);
     });
+}
+
+function isProtectedBooking(booking) {
+    return booking.destination === "Les 2 Alpes" && booking.dates.join(",") === "6-12 aout";
+}
+
+function deleteBooking(index) {
+    const bookings = getBookings();
+    const booking = bookings[index];
+    if (!booking || isProtectedBooking(booking)) {
+        return;
+    }
+
+    bookings.splice(index, 1);
+    localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(bookings));
+    renderBookings();
 }

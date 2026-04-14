@@ -358,6 +358,12 @@ textarea {
     margin-bottom: 8px;
 }
 
+.booking-actions {
+    margin-top: 10px;
+    display: flex;
+    justify-content: flex-end;
+}
+
 .booking-meta {
     color: var(--muted);
     font-size: 0.94rem;
@@ -381,6 +387,12 @@ textarea {
 .btn-secondary {
     background: var(--soft-2);
     color: var(--brand-dark);
+}
+
+.btn-delete {
+    background: #ffffff;
+    color: #527a6f;
+    border: 1px solid var(--line);
 }
 
 .item-remove {
