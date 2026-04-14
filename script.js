@@ -49,9 +49,25 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function setupMenu() {
+    const menuToggle = document.getElementById("btn-menu-toggle");
+    const menuOverlay = document.getElementById("menu-overlay");
+
+    if (menuToggle) {
+        menuToggle.addEventListener("click", () => {
+            const willOpen = !document.body.classList.contains("menu-open");
+            document.body.classList.toggle("menu-open", willOpen);
+            menuToggle.setAttribute("aria-expanded", String(willOpen));
+        });
+    }
+
+    if (menuOverlay) {
+        menuOverlay.addEventListener("click", closeMobileMenu);
+    }
+
     document.querySelectorAll(".menu-link").forEach((btn) => {
         btn.addEventListener("click", () => {
             switchView(btn.dataset.view);
+            closeMobileMenu();
         });
     });
 
@@ -77,6 +93,14 @@ function switchView(viewName) {
 
     if (viewName === "bookings") {
         renderBookings();
+    }
+}
+
+function closeMobileMenu() {
+    document.body.classList.remove("menu-open");
+    const menuToggle = document.getElementById("btn-menu-toggle");
+    if (menuToggle) {
+        menuToggle.setAttribute("aria-expanded", "false");
     }
 }
 

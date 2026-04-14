@@ -12,12 +12,14 @@
 <body>
     <header class="topbar">
         <div class="brand">Escapades</div>
+        <button id="btn-menu-toggle" class="menu-toggle" aria-label="Ouvrir le menu" aria-expanded="false">☰</button>
         <nav class="menu" aria-label="Menu principal">
             <button class="menu-link active" data-view="home">Accueil</button>
             <button class="menu-link" data-view="offers">Voir les offres</button>
             <button class="menu-link" data-view="bookings">Mes réservations</button>
         </nav>
     </header>
+    <div id="menu-overlay" class="menu-overlay"></div>
 
     <main class="shell">
         <section id="view-home" class="view active" aria-labelledby="home-title">
