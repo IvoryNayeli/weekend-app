@@ -500,8 +500,8 @@ function renderDestinationsForCurrentOffer() {
         button.className = "destination-row";
         button.type = "button";
         button.dataset.destination = destination.id;
+        button.style.backgroundImage = `url('${destination.image}')`;
         button.innerHTML = `
-            <img src="${destination.image}" alt="${destination.label}">
             <span>${destination.label}</span>
         `;
         destinationStack.appendChild(button);
