@@ -3,157 +3,102 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Notre Week-end</title>
+    <title>Escapades | Mes Voyages</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="app" class="app">
-        <!-- Écran 1: Introduction -->
-        <div id="screen-intro" class="screen active">
-            <div class="container">
-                <h1>En attendant notre semaine de vacances dans les Alpes...</h1>
-                <p class="intro-text">Je te propose de partir en week-end !</p>
-                <div class="buttons">
-                    <button id="btn-see-proposals" class="btn btn-primary">Voir les propositions</button>
-                    <button id="btn-refuse-intro" class="btn btn-secondary">Non merci</button>
-                </div>
-            </div>
-        </div>
+    <header class="topbar">
+        <div class="brand">Escapades</div>
+        <nav class="menu" aria-label="Menu principal">
+            <button class="menu-link active" data-view="home">Accueil</button>
+            <button class="menu-link" data-view="offers">Voir les offres</button>
+            <button class="menu-link" data-view="bookings">Mes réservations</button>
+        </nav>
+    </header>
 
-        <!-- Écran 2: Choix des dates -->
-        <div id="screen-dates" class="screen">
-            <div class="container">
-                <div class="header">
-                    <h2>Quelles dates te conviendraient ?</h2>
+    <main class="shell">
+        <section id="view-home" class="view active" aria-labelledby="home-title">
+            <article class="hero">
+                <div class="hero-overlay"></div>
+                <div class="hero-content">
+                    <h1 id="home-title">Cap sur de nouvelles aventures</h1>
+                    <p class="hero-subtitle">Avec le retour des beaux jours, viennent aussi les envies d'escapades. Découvre toutes mes propositions</p>
+                    <button id="btn-home-offers" class="btn btn-primary">Voir les offres</button>
                 </div>
-                <div class="dates-options">
-                    <label class="checkbox-option">
-                        <input type="checkbox" name="date" value="15-17-mai">
-                        <span>15–17 mai</span>
-                    </label>
-                    <label class="checkbox-option">
-                        <input type="checkbox" name="date" value="12-14-juin">
-                        <span>12–14 juin</span>
-                    </label>
-                    <label class="checkbox-option">
-                        <input type="checkbox" name="date" value="26-28-juin">
-                        <span>26–28 juin</span>
-                    </label>
-                    <label class="checkbox-option">
-                        <input type="checkbox" name="date" value="custom" id="date-custom">
-                        <span>Aucune date ne me convient</span>
-                    </label>
-                </div>
-                <div id="custom-dates-input" class="custom-input hidden">
-                    <textarea id="custom-dates-text" placeholder="D'autres dates à proposer peut-être ?"></textarea>
-                </div>
-                <div class="buttons">
-                    <button id="btn-validate-dates" class="btn btn-primary">Valider</button>
-                </div>
-            </div>
-        </div>
+            </article>
+        </section>
 
-        <!-- Écran 3: Choix de la destination -->
-        <div id="screen-destination" class="screen">
-            <div class="container">
-                <div class="header">
-                    <h2>Choisissez la destination</h2>
+        <section id="view-offers" class="view" aria-labelledby="offers-title">
+            <h2 id="offers-title" class="section-title">Choisis ton style de séjour</h2>
+            <div class="choice-grid">
+                <button class="choice-card" data-offer="tetatet">
+                    <span>Séjours en tête-à-tête</span>
+                </button>
+                <button class="choice-card" data-offer="zelia">
+                    <span>Séjours avec Zélia</span>
+                </button>
+            </div>
+            <p class="fine-print">* Possibilité de choisir l'une ou l'autre des options, ou bien les deux.</p>
+            <div class="actions-row">
+                <button id="btn-to-dates" class="btn btn-primary">Continuer</button>
+            </div>
+
+            <div id="flow-dates" class="step-card hidden">
+                <h3>Choix des dates</h3>
+                <div class="date-list">
+                    <label><input type="checkbox" name="date-option" value="15-17 mai"> 15-17 mai</label>
+                    <label><input type="checkbox" name="date-option" value="12-14 juin"> 12-14 juin</label>
+                    <label><input type="checkbox" name="date-option" value="26-28 juin"> 26-28 juin</label>
                 </div>
-                <p class="destination-headline">Choisis ton ambiance du week-end 💜</p>
-                <div class="destination-cards">
-                    <button class="destination-button" type="button" data-destination="rocamadour">
-                        <div class="card">
-                            <img class="card-image" src="assets/destinations/rocamadour.jpg" alt="Rocamadour">
-                            <div class="card-content">
-                                <h3>Rocamadour</h3>
-                            </div>
-                        </div>
+                <button id="btn-validate-dates" class="btn btn-primary">Valider</button>
+            </div>
+
+            <div id="flow-destination" class="step-card hidden">
+                <h3>Choix de la destination</h3>
+                <div class="destination-stack">
+                    <button class="destination-row" data-destination="rocamadour">
+                        <img src="assets/destinations/rocamadour.jpg" alt="Rocamadour">
+                        <span>Rocamadour</span>
                     </button>
-                    <button class="destination-button" type="button" data-destination="salagou">
-                        <div class="card">
-                            <img class="card-image" src="assets/destinations/lac-du-salagou.jpg" alt="Lac du Salagou">
-                            <div class="card-content">
-                                <h3>Lac du Salagou</h3>
-                            </div>
-                        </div>
+                    <button class="destination-row" data-destination="salagou">
+                        <img src="assets/destinations/lac-du-salagou.jpg" alt="Lac du Salagou">
+                        <span>Lac du Salagou</span>
                     </button>
                 </div>
-                <button id="btn-destination-none" class="btn btn-secondary" type="button">Aucune destination ne me convient</button>
-                <div id="custom-destination-input" class="custom-input hidden">
-                    <textarea id="custom-destination-text" placeholder="Tu as une autre destination en tête ?"></textarea>
-                    <button id="btn-validate-custom-destination" class="btn btn-primary" type="button">Valider</button>
-                </div>
-                <p class="weather-note">* Le choix de destination pourra être ajusté selon la météo.</p>
             </div>
-        </div>
 
-        <!-- Écran 4: Choix du logement -->
-        <div id="screen-accommodation" class="screen">
-            <div class="container">
-                <div class="header">
-                    <h2>Logement</h2>
+            <div id="flow-program" class="step-card hidden">
+                <h3>Programme du séjour</h3>
+                <ul id="program-list" class="editable-list"></ul>
+                <div class="inline-input">
+                    <input id="new-program-item" type="text" placeholder="Ajouter une activité">
+                    <button id="btn-add-program" class="btn btn-secondary">Ajouter</button>
                 </div>
-                <p class="accommodation-intro">Découvrez nos suggestions sur Airbnb</p>
-                <div id="accommodation-content"></div>
-                <div class="buttons">
-                    <button id="btn-accommodation-perfect" class="btn btn-primary">C'est parfait</button>
-                    <button id="btn-accommodation-issue" class="btn btn-secondary">Quelque chose ne me convient pas</button>
-                </div>
-                <div id="accommodation-feedback" class="custom-input hidden">
-                    <textarea id="accommodation-text" placeholder="Qu'est-ce qui ne te convient pas ?"></textarea>
-                </div>
+                <button id="btn-validate-program" class="btn btn-primary">Valider</button>
             </div>
-        </div>
 
-        <!-- Écran 5: Récapitulatif -->
-        <div id="screen-summary" class="screen">
-            <div class="container">
-                <div class="header">
-                    <h2>Récapitulatif</h2>
-                </div>
-                <div class="summary-content">
-                    <div class="summary-section">
-                        <h3>📅 Dates</h3>
-                        <div id="summary-dates"></div>
-                    </div>
-                    <div class="summary-section">
-                        <h3>📍 Destination</h3>
-                        <div id="summary-destination"></div>
-                    </div>
-                    <div class="summary-section">
-                        <h3>🏠 Logement</h3>
-                        <div id="summary-accommodation"></div>
-                    </div>
-                    <div class="summary-section">
-                        <h3>🗓️ Programme</h3>
-                        <div id="summary-program"></div>
-                    </div>
-                </div>
-                <div class="buttons">
-                    <button id="btn-submit" class="btn btn-primary">Envoyer le récapitulatif</button>
-                </div>
+            <div id="flow-accommodation" class="step-card hidden">
+                <h3>Suggestion de logements</h3>
+                <a id="accommodation-link" class="airbnb-link" href="#" target="_blank" rel="noopener noreferrer">Ouvrir la sélection Airbnb</a>
+                <textarea id="accommodation-note" placeholder="Ajouter une remarque (optionnel)"></textarea>
+                <button id="btn-validate-accommodation" class="btn btn-primary">Valider</button>
             </div>
-        </div>
 
-        <!-- Écran de refus -->
-        <div id="screen-refuse" class="screen">
-            <div class="container">
-                <div class="message-refuse">
-                    <p id="refuse-message"></p>
-                </div>
+            <div id="flow-summary" class="step-card hidden">
+                <h3>Récapitulatif</h3>
+                <div id="summary-content" class="summary-box"></div>
+                <button id="btn-save-booking" class="btn btn-primary">Ajouter à mes réservations</button>
             </div>
-        </div>
-    </div>
+        </section>
 
-    <!-- Formulaire caché pour FormSubmit -->
-    <form id="hidden-form" action="https://formsubmit.co/your-email@example.com" method="POST" style="display: none;">
-        <textarea name="message" id="form-message"></textarea>
-        <input type="hidden" name="_captcha" value="false">
-        <input type="hidden" name="_subject" value="Proposition week-end">
-    </form>
+        <section id="view-bookings" class="view" aria-labelledby="bookings-title">
+            <h2 id="bookings-title" class="section-title">Mes réservations</h2>
+            <div id="bookings-list" class="bookings-list"></div>
+        </section>
+    </main>
 
     <script src="script.js"></script>
 </body>

@@ -1,392 +1,305 @@
-// ===== CONFIG =====
 const CONFIG = {
-    // Email pour FormSubmit (à modifier)
-    EMAIL: "your-email@example.com",
-    
-    // Message de sortie anticipée
-    EARLY_EXIT_MESSAGE: "Pas de souci, focus sur les vacances d'août dans ce cas ! ❤️",
-    
-    // Programmes selon destination
+    AIRBNB_LINKS: {
+        rocamadour: "https://www.airbnb.fr/wishlists/invite/608f9688-9c16-48c2-9b1b-6f8586718153?viralityEntryPoint=8&s=76",
+        salagou: "https://www.airbnb.fr/wishlists/invite/abca9b48-7946-4378-8de0-a70e482e307c?viralityEntryPoint=8&s=76"
+    },
     PROGRAMS: {
-        "rocamadour": [
-            "🏰 Visite de Rocamadour",
-            "🕳️ Gouffre de Padirac",
-            "🏘️ Arrêt à Saint-Cirq-Lapopie en chemin",
-            "🎨 Grotte des Merveilles"
+        rocamadour: [
+            "Visite de Rocamadour",
+            "Gouffre de Padirac",
+            "Arrêt à Saint-Cirq-Lapopie",
+            "Grotte des Merveilles"
         ],
-        "salagou": [
-            "🥾 Randonnée autour du lac (incontournable)",
-            "🏔️ Cirque de Mourèze",
-            "🏖️ Arrêt plage sur la route"
+        salagou: [
+            "Randonnée autour du lac",
+            "Cirque de Moureze",
+            "Pause plage"
         ]
     },
-    
-    // Liens Airbnb
-    AIRBNB_LINKS: {
-        "rocamadour": "https://www.airbnb.fr/wishlists/invite/608f9688-9c16-48c2-9b1b-6f8586718153?viralityEntryPoint=8&s=76",
-        "salagou": "https://www.airbnb.fr/wishlists/invite/abca9b48-7946-4378-8de0-a70e482e307c?viralityEntryPoint=8&s=76"
-    }
+    STORAGE_KEY: "weekend_bookings"
 };
 
-// ===== STATE =====
-let state = {
-    dates: [],
-    customDates: "",
-    destinations: [],
-    customDestination: "",
-    accommodationFeedback: ""
+const state = {
+    selectedOffers: [],
+    selectedDates: [],
+    selectedDestination: "",
+    programItems: [],
+    accommodationNote: ""
 };
 
-// ===== SCREEN NAVIGATION =====
-function showScreen(screenId) {
-    document.querySelectorAll('.screen').forEach(screen => {
-        screen.classList.remove('active');
-    });
-    const screen = document.getElementById(screenId);
-    if (screen) {
-        screen.classList.add('active');
-    }
-}
+const seededBooking = {
+    type: "Sejour deja reserve",
+    dates: ["6-12 aout"],
+    destination: "Les 2 Alpes",
+    program: [
+        "Velo de descente",
+        "Kayak",
+        "Randonnee",
+        "Restaurant semi-gastronomique"
+    ],
+    accommodation: "A confirmer"
+};
 
-// ===== EVENT LISTENERS =====
-document.addEventListener('DOMContentLoaded', () => {
-    setupEventListeners();
+document.addEventListener("DOMContentLoaded", () => {
+    setupMenu();
+    setupOffers();
+    setupFlow();
+    ensureSeedBooking();
+    renderBookings();
 });
 
-function setupEventListeners() {
-    // Screen 1: Introduction
-    const btnSeeProposals = document.getElementById('btn-see-proposals');
-    const btnRefuseIntro = document.getElementById('btn-refuse-intro');
-    
-    if (btnSeeProposals) {
-        btnSeeProposals.addEventListener('click', () => {
-            showScreen('screen-dates');
+function setupMenu() {
+    document.querySelectorAll(".menu-link").forEach((btn) => {
+        btn.addEventListener("click", () => {
+            switchView(btn.dataset.view);
+        });
+    });
+
+    const btnHomeOffers = document.getElementById("btn-home-offers");
+    if (btnHomeOffers) {
+        btnHomeOffers.addEventListener("click", () => switchView("offers"));
+    }
+}
+
+function switchView(viewName) {
+    document.querySelectorAll(".view").forEach((view) => view.classList.remove("active"));
+    document.querySelectorAll(".menu-link").forEach((btn) => btn.classList.remove("active"));
+
+    const targetView = document.getElementById(`view-${viewName}`);
+    const targetBtn = document.querySelector(`.menu-link[data-view="${viewName}"]`);
+
+    if (targetView) {
+        targetView.classList.add("active");
+    }
+    if (targetBtn) {
+        targetBtn.classList.add("active");
+    }
+
+    if (viewName === "bookings") {
+        renderBookings();
+    }
+}
+
+function setupOffers() {
+    document.querySelectorAll(".choice-card").forEach((button) => {
+        button.addEventListener("click", () => {
+            const offerKey = button.dataset.offer;
+            if (!offerKey) {
+                return;
+            }
+
+            if (state.selectedOffers.includes(offerKey)) {
+                state.selectedOffers = state.selectedOffers.filter((item) => item !== offerKey);
+                button.classList.remove("selected");
+            } else {
+                state.selectedOffers.push(offerKey);
+                button.classList.add("selected");
+            }
+        });
+    });
+}
+
+function setupFlow() {
+    const btnToDates = document.getElementById("btn-to-dates");
+    if (btnToDates) {
+        btnToDates.addEventListener("click", () => {
+            if (state.selectedOffers.length === 0) {
+                alert("Choisis au moins un type de sejour.");
+                return;
+            }
+            revealStep("flow-dates");
         });
     }
 
-    if (btnRefuseIntro) {
-        btnRefuseIntro.addEventListener('click', refuseIntro);
-    }
-
-    // Screen 2: Dates
-    const dateCustom = document.getElementById('date-custom');
-    if (dateCustom) {
-        dateCustom.addEventListener('change', (e) => {
-            toggleElement('custom-dates-input', e.target.checked);
-        });
-    }
-
-    const btnValidateDates = document.getElementById('btn-validate-dates');
+    const btnValidateDates = document.getElementById("btn-validate-dates");
     if (btnValidateDates) {
-        btnValidateDates.addEventListener('click', validateDates);
+        btnValidateDates.addEventListener("click", () => {
+            state.selectedDates = Array.from(document.querySelectorAll('input[name="date-option"]:checked')).map((input) => input.value);
+            if (state.selectedDates.length === 0) {
+                alert("Choisis au moins une date.");
+                return;
+            }
+            revealStep("flow-destination");
+        });
     }
 
-    // Screen 3: Destination
-    document.querySelectorAll('.destination-button').forEach((button) => {
-        button.addEventListener('click', () => {
-            selectPresetDestination(button.dataset.destination);
+    document.querySelectorAll(".destination-row").forEach((button) => {
+        button.addEventListener("click", () => {
+            const destination = button.dataset.destination;
+            if (!destination) {
+                return;
+            }
+            state.selectedDestination = destination;
+            state.programItems = [...CONFIG.PROGRAMS[destination]];
+            renderProgram();
+            revealStep("flow-program");
         });
     });
 
-    const btnDestinationNone = document.getElementById('btn-destination-none');
-    if (btnDestinationNone) {
-        btnDestinationNone.addEventListener('click', () => {
-            toggleElement('custom-destination-input', true);
+    const btnAddProgram = document.getElementById("btn-add-program");
+    if (btnAddProgram) {
+        btnAddProgram.addEventListener("click", () => {
+            const input = document.getElementById("new-program-item");
+            const text = input ? input.value.trim() : "";
+            if (!text) {
+                return;
+            }
+            state.programItems.push(text);
+            input.value = "";
+            renderProgram();
         });
     }
 
-    const btnValidateCustomDestination = document.getElementById('btn-validate-custom-destination');
-    if (btnValidateCustomDestination) {
-        btnValidateCustomDestination.addEventListener('click', validateCustomDestination);
-    }
-
-    // Screen 4: Accommodation
-    const btnAccommodationPerfect = document.getElementById('btn-accommodation-perfect');
-    if (btnAccommodationPerfect) {
-        btnAccommodationPerfect.addEventListener('click', showSummary);
-    }
-
-    const btnAccommodationIssue = document.getElementById('btn-accommodation-issue');
-    if (btnAccommodationIssue) {
-        btnAccommodationIssue.addEventListener('click', () => {
-            toggleElement('accommodation-feedback', true);
+    const btnValidateProgram = document.getElementById("btn-validate-program");
+    if (btnValidateProgram) {
+        btnValidateProgram.addEventListener("click", () => {
+            if (state.programItems.length === 0) {
+                alert("Ajoute au moins une activite au programme.");
+                return;
+            }
+            updateAccommodationLink();
+            revealStep("flow-accommodation");
         });
     }
 
-    // Screen 5: Submit
-    const btnSubmit = document.getElementById('btn-submit');
-    if (btnSubmit) {
-        btnSubmit.addEventListener('click', submitForm);
+    const btnValidateAccommodation = document.getElementById("btn-validate-accommodation");
+    if (btnValidateAccommodation) {
+        btnValidateAccommodation.addEventListener("click", () => {
+            const noteInput = document.getElementById("accommodation-note");
+            state.accommodationNote = noteInput ? noteInput.value.trim() : "";
+            renderSummary();
+            revealStep("flow-summary");
+        });
     }
 
-}
-
-// ===== HELPER FUNCTIONS =====
-function toggleElement(elementId, show) {
-    const element = document.getElementById(elementId);
-    if (element) {
-        if (show) {
-            element.classList.remove('hidden');
-        } else {
-            element.classList.add('hidden');
-        }
+    const btnSaveBooking = document.getElementById("btn-save-booking");
+    if (btnSaveBooking) {
+        btnSaveBooking.addEventListener("click", saveCurrentBooking);
     }
 }
 
-function getCheckedValues(name) {
-    return Array.from(document.querySelectorAll(`input[name="${name}"]:checked`))
-        .map(input => input.value);
+function revealStep(stepId) {
+    const el = document.getElementById(stepId);
+    if (el) {
+        el.classList.remove("hidden");
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
 }
 
-// ===== SCREEN: DATES =====
-function validateDates() {
-    state.dates = getCheckedValues('date');
-    
-    if (state.dates.includes('custom')) {
-        const customDatesInput = document.getElementById('custom-dates-text');
-        state.customDates = customDatesInput ? customDatesInput.value : '';
-        if (!state.customDates) {
-            endJourney(CONFIG.EARLY_EXIT_MESSAGE);
-            return;
-        }
-    }
-    
-    if (state.dates.length === 0) {
-        alert('Choisis au moins une option');
+function renderProgram() {
+    const list = document.getElementById("program-list");
+    if (!list) {
         return;
     }
-    
-    showScreen('screen-destination');
-}
 
-function resetDatesScreen() {
-    document.querySelectorAll('input[name="date"]').forEach(input => {
-        input.checked = false;
+    list.innerHTML = "";
+    state.programItems.forEach((item, index) => {
+        const li = document.createElement("li");
+        const label = document.createElement("span");
+        label.textContent = item;
+
+        const removeBtn = document.createElement("button");
+        removeBtn.className = "item-remove";
+        removeBtn.type = "button";
+        removeBtn.textContent = "Supprimer";
+        removeBtn.addEventListener("click", () => {
+            state.programItems.splice(index, 1);
+            renderProgram();
+        });
+
+        li.appendChild(label);
+        li.appendChild(removeBtn);
+        list.appendChild(li);
     });
-    const customDatesText = document.getElementById('custom-dates-text');
-    if (customDatesText) {
-        customDatesText.value = '';
-    }
-    toggleElement('custom-dates-input', false);
 }
 
-// ===== SCREEN: DESTINATION =====
-function selectPresetDestination(destination) {
-    state.destinations = [destination];
-    state.customDestination = '';
-    showAccommodationScreen();
-}
-
-function validateCustomDestination() {
-    const customDestInput = document.getElementById('custom-destination-text');
-    state.customDestination = customDestInput ? customDestInput.value.trim() : '';
-    state.destinations = ['custom'];
-
-    if (!state.customDestination) {
-        endJourney(CONFIG.EARLY_EXIT_MESSAGE);
+function updateAccommodationLink() {
+    const link = document.getElementById("accommodation-link");
+    if (!link) {
         return;
     }
 
-    showAccommodationScreen();
+    link.href = CONFIG.AIRBNB_LINKS[state.selectedDestination] || "#";
 }
 
-// ===== SCREEN: ACCOMMODATION =====
-function showAccommodationScreen() {
-    let accommodationList = state.destinations
-        .filter(d => d !== 'custom')
-        .map(dest => {
-            const destKey = dest === 'rocamadour' ? 'rocamadour' : 'salagou';
-            return `
-                <a href="${CONFIG.AIRBNB_LINKS[destKey]}" target="_blank" class="accommodation-link">
-                    <div class="accommodation-card">
-                        <h4>${dest === 'rocamadour' ? 'Rocamadour' : 'Lac du Salagou'}</h4>
-                        <p class="accommodation-subtitle">Sélection de logements pour toi</p>
-                        <span class="accommodation-cta">Ouvrir la liste Airbnb</span>
-                    </div>
-                </a>
-            `;
-        })
-        .join('');
-
-    if (state.customDestination) {
-        accommodationList += '<p class="custom-note">On te proposera des logements pour ' + state.customDestination + '.</p>';
+function renderSummary() {
+    const summary = document.getElementById("summary-content");
+    if (!summary) {
+        return;
     }
 
-    const accommodationContent = document.getElementById('accommodation-content');
-    if (accommodationContent) {
-        accommodationContent.innerHTML = accommodationList;
-    }
-    showScreen('screen-accommodation');
+    const offersText = state.selectedOffers
+        .map((offer) => (offer === "tetatet" ? "Sejours en tete-a-tete" : "Sejours avec Zelia"))
+        .join(" + ");
+    const destinationText = state.selectedDestination === "rocamadour" ? "Rocamadour" : "Lac du Salagou";
+
+    summary.innerHTML = `
+        <p><strong>Type:</strong> ${offersText}</p>
+        <p><strong>Dates:</strong> ${state.selectedDates.join(", ")}</p>
+        <p><strong>Destination:</strong> ${destinationText}</p>
+        <p><strong>Programme:</strong> ${state.programItems.join(" | ")}</p>
+        <p><strong>Remarque logement:</strong> ${state.accommodationNote || "Aucune"}</p>
+    `;
 }
 
-// ===== SCREEN: SUMMARY =====
-function showSummary() {
-    displaySummaryDates();
-    displaySummaryDestination();
-    displaySummaryAccommodation();
-    displaySummaryProgram();
-    showScreen('screen-summary');
+function saveCurrentBooking() {
+    const bookings = getBookings();
+
+    const destinationText = state.selectedDestination === "rocamadour" ? "Rocamadour" : "Lac du Salagou";
+    const typeText = state.selectedOffers
+        .map((offer) => (offer === "tetatet" ? "Sejours en tete-a-tete" : "Sejours avec Zelia"))
+        .join(" + ");
+
+    bookings.push({
+        type: typeText,
+        dates: state.selectedDates,
+        destination: destinationText,
+        program: state.programItems,
+        accommodation: state.accommodationNote || "Aucune remarque"
+    });
+
+    localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(bookings));
+    renderBookings();
+    switchView("bookings");
 }
 
-function displaySummaryDates() {
-    let datesText = '';
-    
-    const standardDates = state.dates.filter(d => d !== 'custom');
-    if (standardDates.length > 0) {
-        datesText = standardDates.join(', ');
-    }
-    
-    if (state.customDates) {
-        datesText += (datesText ? ' ou ' : '') + state.customDates;
-    }
-    
-    const summaryDates = document.getElementById('summary-dates');
-    if (summaryDates) {
-        summaryDates.innerHTML = `<p>${datesText || 'Non spécifiées'}</p>`;
+function ensureSeedBooking() {
+    const bookings = getBookings();
+    const hasSeed = bookings.some((booking) => booking.destination === seededBooking.destination && booking.dates.join(",") === seededBooking.dates.join(","));
+
+    if (!hasSeed) {
+        bookings.unshift(seededBooking);
+        localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(bookings));
     }
 }
 
-function displaySummaryDestination() {
-    let destText = '';
-    
-    const standardDests = state.destinations
-        .filter(d => d !== 'custom')
-        .map(d => d === 'rocamadour' ? 'Rocamadour' : 'Lac du Salagou');
-    
-    if (standardDests.length > 0) {
-        destText = standardDests.join(', ');
-    }
-    
-    if (state.customDestination) {
-        destText += (destText ? ' ou ' : '') + state.customDestination;
-    }
-    
-    const summaryDestination = document.getElementById('summary-destination');
-    if (summaryDestination) {
-        summaryDestination.innerHTML = `<p>${destText || 'Non spécifiée'}</p>`;
+function getBookings() {
+    try {
+        const raw = localStorage.getItem(CONFIG.STORAGE_KEY);
+        return raw ? JSON.parse(raw) : [];
+    } catch (error) {
+        return [];
     }
 }
 
-function displaySummaryAccommodation() {
-    const accommodationText = document.getElementById('accommodation-text');
-    const feedback = accommodationText ? accommodationText.value : 'Logement validé';
-    const summaryAccommodation = document.getElementById('summary-accommodation');
-    if (summaryAccommodation) {
-        summaryAccommodation.innerHTML = `<p>${feedback || 'Logement validé'}</p>`;
-    }
-}
-
-function displaySummaryProgram() {
-    let programHTML = '';
-    
-    const rocamadourSelected = state.destinations.includes('rocamadour');
-    const salagouSelected = state.destinations.includes('salagou');
-    
-    if (rocamadourSelected) {
-        programHTML += '<div class="program-item"><strong>🏰 Rocamadour</strong><ul>';
-        CONFIG.PROGRAMS.rocamadour.forEach(activity => {
-            programHTML += `<li>${activity}</li>`;
-        });
-        programHTML += '</ul></div>';
-    }
-    
-    if (salagouSelected) {
-        programHTML += '<div class="program-item"><strong>🌊 Lac du Salagou</strong><ul>';
-        CONFIG.PROGRAMS.salagou.forEach(activity => {
-            programHTML += `<li>${activity}</li>`;
-        });
-        programHTML += '</ul></div>';
-    }
-    
-    if (state.customDestination) {
-        programHTML += `<p><em>Le programme sera confirmé selon les disponibilités pour ${state.customDestination}</em></p>`;
-    }
-    
-    const summaryProgram = document.getElementById('summary-program');
-    if (summaryProgram) {
-        summaryProgram.innerHTML = programHTML || '<p>Programme à définir</p>';
-    }
-}
-
-// ===== REFUSAL =====
-function refuseIntro() {
-    endJourney(CONFIG.EARLY_EXIT_MESSAGE);
-}
-
-function endJourney(message) {
-    const refuseMessage = document.getElementById('refuse-message');
-
-    if (refuseMessage) {
-        refuseMessage.textContent = message;
+function renderBookings() {
+    const wrap = document.getElementById("bookings-list");
+    if (!wrap) {
+        return;
     }
 
-    showScreen('screen-refuse');
-}
+    const bookings = getBookings();
+    wrap.innerHTML = "";
 
-// ===== FORM SUBMISSION =====
-function submitForm() {
-    const summary = compileSummary();
-    
-    // Update form hidden field
-    const formMessage = document.getElementById('form-message');
-    if (formMessage) {
-        formMessage.value = summary;
-    }
-    
-    // Update email from CONFIG
-    const form = document.getElementById('hidden-form');
-    if (form) {
-        form.action = `https://formsubmit.co/${CONFIG.EMAIL}`;
-        form.submit();
-    }
-}
-
-function compileSummary() {
-    let summary = '=== PROPOSITION WEEK-END ===\n\n';
-    
-    // Dates
-    summary += '📅 DATES PROPOSÉES:\n';
-    const datesList = state.dates.filter(d => d !== 'custom').join(', ') || 'Non sélectionnées';
-    summary += datesList + '\n';
-    if (state.customDates) {
-        summary += 'Alternative: ' + state.customDates + '\n';
-    }
-    summary += '\n';
-    
-    // Destinations
-    summary += '📍 DESTINATIONS:\n';
-    const destsList = state.destinations
-        .filter(d => d !== 'custom')
-        .map(d => d === 'rocamadour' ? 'Rocamadour' : 'Lac du Salagou')
-        .join(', ') || 'Non sélectionnées';
-    summary += destsList + '\n';
-    if (state.customDestination) {
-        summary += 'Alternative: ' + state.customDestination + '\n';
-    }
-    summary += '\n';
-    
-    // Logement feedback
-    summary += '🏠 LOGEMENT:\n';
-    const accommodationText = document.getElementById('accommodation-text');
-    const accommodationFeedback = accommodationText ? accommodationText.value : 'Validé';
-    summary += (accommodationFeedback || 'Validé') + '\n\n';
-    
-    // Program
-    summary += '🗓️ PROGRAMME ENVISAGÉ:\n';
-    if (state.destinations.includes('rocamadour')) {
-        summary += 'Rocamadour:\n';
-        CONFIG.PROGRAMS.rocamadour.forEach(activity => {
-            summary += '  - ' + activity + '\n';
-        });
-    }
-    if (state.destinations.includes('salagou')) {
-        summary += 'Lac du Salagou:\n';
-        CONFIG.PROGRAMS.salagou.forEach(activity => {
-            summary += '  - ' + activity + '\n';
-        });
-    }
-    
-    summary += '\n=== FIN DU RÉCAPITULATIF ===';
-    
-    return summary;
+    bookings.forEach((booking) => {
+        const card = document.createElement("article");
+        card.className = "booking-card";
+        card.innerHTML = `
+            <h3>${booking.destination}</h3>
+            <p class="booking-meta">${booking.dates.join(", ")} • ${booking.type}</p>
+            <p><strong>Programme:</strong> ${booking.program.join(" | ")}</p>
+            <p><strong>Logement:</strong> ${booking.accommodation}</p>
+        `;
+        wrap.appendChild(card);
+    });
 }
