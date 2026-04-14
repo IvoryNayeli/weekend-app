@@ -35,7 +35,8 @@ const state = {
     programItems: [],
     requiredProgramItems: [],
     accommodationNote: "",
-    offerLocked: false
+    offerLocked: false,
+    lastSavedBookingId: null
 };
 
 const seededBooking = {
@@ -305,6 +306,7 @@ function renderSummary() {
 
 function saveCurrentBooking() {
     const bookings = getBookings();
+    const bookingId = createBookingId();
 
     const destinationText = state.selectedDestination === "rocamadour" ? "Rocamadour" : "Lac du Salagou";
     const typeText = state.selectedOffers
@@ -312,6 +314,7 @@ function saveCurrentBooking() {
         .join(" + ");
 
     bookings.push({
+        id: bookingId,
         type: typeText,
         dates: state.selectedDates,
         destination: destinationText,
@@ -320,9 +323,14 @@ function saveCurrentBooking() {
     });
 
     localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(bookings));
+    state.lastSavedBookingId = bookingId;
     resetCurrentJourney();
     renderBookings();
     navigateTo("bookings");
+}
+
+function createBookingId() {
+    return `booking-${Date.now()}-${Math.floor(Math.random() * 100000)}`;
 }
 
 function resetCurrentJourney() {
@@ -382,10 +390,12 @@ function renderBookings() {
 
     const bookings = getBookings();
     wrap.innerHTML = "";
+    let focusedCard = null;
 
     bookings.forEach((booking, index) => {
         const card = document.createElement("article");
         card.className = "booking-card";
+        card.dataset.bookingId = booking.id || "";
         const canDelete = !isProtectedBooking(booking);
         card.innerHTML = `
             <h3>${booking.destination}</h3>
@@ -410,8 +420,19 @@ function renderBookings() {
             card.appendChild(actions);
         }
 
+        if (state.lastSavedBookingId && booking.id === state.lastSavedBookingId) {
+            card.classList.add("booking-card-focus");
+            focusedCard = card;
+        }
+
         wrap.appendChild(card);
     });
+
+    if (focusedCard) {
+        requestAnimationFrame(() => {
+            focusedCard.scrollIntoView({ behavior: "smooth", block: "center" });
+        });
+    }
 }
 
 function isProtectedBooking(booking) {

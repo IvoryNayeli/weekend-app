@@ -415,6 +415,19 @@ textarea {
     cursor: pointer;
 }
 
+#btn-add-program {
+    border-radius: 8px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    padding: 6px 8px;
+    min-width: 82px;
+}
+
+.booking-card-focus {
+    border-color: var(--brand-dark);
+    box-shadow: 0 0 0 3px rgba(21, 108, 154, 0.18);
+}
+
 .item-required {
     margin-left: auto;
     font-size: 0.76rem;
