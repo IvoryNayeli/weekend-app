@@ -175,10 +175,10 @@ function switchView(viewName, options = {}) {
     }
 
     if (viewName === "bookings") {
-        renderBookings(Boolean(options.focusLastSaved));
+        renderBookings();
     }
 
-    if (targetView && !options.focusLastSaved) {
+    if (targetView) {
         requestAnimationFrame(() => {
             window.scrollTo({ top: 0, behavior: "smooth" });
         });
@@ -428,7 +428,7 @@ function saveCurrentBooking() {
     localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(bookings));
     state.lastSavedBookingId = bookingId;
     resetCurrentJourney();
-    navigateTo("bookings", { focusLastSaved: true });
+    navigateTo("bookings");
 }
 
 function createBookingId() {
@@ -542,7 +542,7 @@ function getBookings() {
     }
 }
 
-function renderBookings(focusLastSaved = false) {
+function renderBookings() {
     const wrap = document.getElementById("bookings-list");
     if (!wrap) {
         return;
@@ -550,7 +550,6 @@ function renderBookings(focusLastSaved = false) {
 
     const bookings = getBookings();
     wrap.innerHTML = "";
-    let focusedCard = null;
 
     bookings.forEach((booking, index) => {
         const card = document.createElement("article");
@@ -580,20 +579,14 @@ function renderBookings(focusLastSaved = false) {
             card.appendChild(actions);
         }
 
-        if (focusLastSaved && state.lastSavedBookingId && booking.id === state.lastSavedBookingId) {
+        if (state.lastSavedBookingId && booking.id === state.lastSavedBookingId) {
             card.classList.add("booking-card-focus");
-            focusedCard = card;
         }
 
         wrap.appendChild(card);
     });
 
-    if (focusedCard) {
-        requestAnimationFrame(() => {
-            focusedCard.scrollIntoView({ behavior: "smooth", block: "center" });
-        });
-        state.lastSavedBookingId = null;
-    }
+    state.lastSavedBookingId = null;
 }
 
 function submitBookingsToAdministrator() {

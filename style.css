@@ -150,16 +150,21 @@ body {
 }
 
 #home-bookings-card {
+    min-height: 320px;
     background: linear-gradient(130deg, rgba(250, 248, 240, 0.95), rgba(245, 240, 230, 0.9)),
         url("assets/destinations/alpes.jpg") center/cover !important;
 }
 
 #home-bookings-card .hero-content {
     color: var(--ink);
+    padding: 38px 38px 34px;
 }
 
 #home-bookings-card .btn-primary {
-    color: var(--white);
+    background: linear-gradient(135deg, rgba(250, 248, 240, 0.96), rgba(245, 240, 230, 0.92));
+    color: var(--ink);
+    border: 1px solid rgba(21, 94, 143, 0.14);
+    box-shadow: 0 10px 24px rgba(21, 94, 143, 0.12);
 }
 
 .hero + .hero {
