@@ -158,6 +158,7 @@ function setupMenu() {
 function navigateTo(viewName, options = {}) {
     switchView(viewName, options);
     closeMobileMenu();
+    window.scrollTo(0, 0);
 }
 
 function switchView(viewName, options = {}) {
@@ -178,11 +179,6 @@ function switchView(viewName, options = {}) {
         renderBookings();
     }
 
-    if (targetView) {
-        requestAnimationFrame(() => {
-            window.scrollTo({ top: 0, behavior: "smooth" });
-        });
-    }
 }
 
 function closeMobileMenu() {
