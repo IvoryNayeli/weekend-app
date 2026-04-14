@@ -98,7 +98,7 @@ const state = {
 
 const seededBooking = {
     type: "Séjour déjà réservé",
-    dates: ["6-12 août"],
+    dates: ["3-9 août"],
     destination: "Les 2 Alpes",
     program: [
         "Vélo de descente",
@@ -624,7 +624,7 @@ function buildBookingsEmailBody(bookings) {
 }
 
 function isProtectedBooking(booking) {
-    return booking.destination === "Les 2 Alpes" && booking.dates.join(",") === "6-12 août";
+    return booking.destination === "Les 2 Alpes" && booking.dates.join(",") === "3-9 août";
 }
 
 function deleteBooking(index) {
