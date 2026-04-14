@@ -145,6 +145,11 @@ function setupMenu() {
     if (btnHomeOffers) {
         btnHomeOffers.addEventListener("click", () => navigateTo("offers"));
     }
+
+    const btnHomeBookings = document.getElementById("btn-home-bookings");
+    if (btnHomeBookings) {
+        btnHomeBookings.addEventListener("click", () => navigateTo("bookings"));
+    }
 }
 
 function navigateTo(viewName) {

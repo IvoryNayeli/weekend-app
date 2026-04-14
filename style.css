@@ -149,6 +149,10 @@ body {
         url("assets/destinations/lac-du-salagou.jpg") center/cover;
 }
 
+.hero + .hero {
+    margin-top: 24px;
+}
+
 .hero-overlay {
     position: absolute;
     inset: 0;
