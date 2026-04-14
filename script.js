@@ -54,6 +54,7 @@ const CONFIG = {
         zelia: {
             label: "Séjour avec Zélia",
             dates: [
+                "3-5 juillet",
                 "2-3 jours sur la semaine du 13 juillet",
                 "2-3 jours sur la semaine du 10 août"
             ],
