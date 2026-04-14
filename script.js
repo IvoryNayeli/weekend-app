@@ -64,18 +64,19 @@ function setupMenu() {
         menuOverlay.addEventListener("click", closeMobileMenu);
     }
 
-    document.querySelectorAll(".shortcut-link").forEach((btn) => {
-        btn.addEventListener("click", () => {
-            switchView(btn.dataset.view);
-            closeMobileMenu();
-        });
-    });
+    document.addEventListener("click", (event) => {
+        const target = event.target.closest(".shortcut-link, .menu-link");
+        if (!target) {
+            return;
+        }
 
-    document.querySelectorAll(".menu-link").forEach((btn) => {
-        btn.addEventListener("click", () => {
-            switchView(btn.dataset.view);
-            closeMobileMenu();
-        });
+        const viewName = target.dataset.view;
+        if (!viewName) {
+            return;
+        }
+
+        switchView(viewName);
+        closeMobileMenu();
     });
 
     const btnHomeOffers = document.getElementById("btn-home-offers");
