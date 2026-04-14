@@ -59,8 +59,7 @@ const CONFIG = {
                 "2-3 jours sur la semaine du 10 août"
             ],
             destinations: [
-                { id: "mediterranee", label: "Mer Méditerrannée", image: "assets/destinations/mediterranee.jpg" },
-                { id: "atlantique", label: "Océan Atlantique", image: "assets/destinations/atlantique.jpg" }
+                { id: "mediterranee", label: "Mer Méditerrannée", image: "assets/destinations/mediterranee.jpg" }
             ],
             programs: {
                 mediterranee: [
@@ -68,20 +67,13 @@ const CONFIG = {
                     "Fête foraine",
                     "Ballade en vélo",
                     "Padel avec ton ami Rémi (l'appât)"
-                ],
-                atlantique: [
-                    "Plage",
-                    "Fête foraine",
-                    "Ballade en vélo"
                 ]
             },
             requiredPrograms: {
-                mediterranee: [],
-                atlantique: []
+                mediterranee: []
             },
             removablePrograms: {
-                mediterranee: ["Padel avec ton ami Rémi (l'appât)"],
-                atlantique: []
+                mediterranee: ["Padel avec ton ami Rémi (l'appât)"]
             }
         }
     },
