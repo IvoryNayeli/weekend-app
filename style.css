@@ -272,11 +272,11 @@ body {
     border: 0;
     border-radius: 16px;
     overflow: hidden;
-    min-height: 116px;
+    min-height: 160px;
     cursor: pointer;
     background-size: cover;
     background-position: center;
-    background-attachment: fixed;
+    background-repeat: no-repeat;
 }
 
 .destination-row span {
