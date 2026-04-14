@@ -1,7 +1,8 @@
 const CONFIG = {
     AIRBNB_LINKS: {
         rocamadour: "https://www.airbnb.fr/wishlists/invite/608f9688-9c16-48c2-9b1b-6f8586718153?viralityEntryPoint=8&s=76",
-        salagou: "https://www.airbnb.fr/wishlists/invite/abca9b48-7946-4378-8de0-a70e482e307c?viralityEntryPoint=8&s=76"
+        salagou: "https://www.airbnb.fr/wishlists/invite/abca9b48-7946-4378-8de0-a70e482e307c?viralityEntryPoint=8&s=76",
+        mediterranee: "https://www.airbnb.fr/wishlists/invite/22cc0be1-588f-4e86-b230-fba707ae8d1a?viralityEntryPoint=8&s=76"
     },
     PROGRAMS: {
         rocamadour: [
