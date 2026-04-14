@@ -8,13 +8,13 @@ const CONFIG = {
         rocamadour: [
             "Visite de Rocamadour",
             "Gouffre de Padirac",
-            "Arrêt à Saint-Cirq-Lapopie",
-            "Grotte des Merveilles"
+            "Arrêt à Saint-Cirq-Lapopie sur la route",
+            "Visite de la Grotte des Merveilles"
         ],
         salagou: [
             "Randonnée autour du lac",
-            "Cirque de Moureze",
-            "Pause plage"
+            "Randonnée au cirque de Mourèze",
+            "Détour par la plage"
         ]
     },
     REQUIRED_PROGRAMS: {
@@ -38,13 +38,13 @@ const CONFIG = {
                 rocamadour: [
                     "Visite de Rocamadour",
                     "Gouffre de Padirac",
-                    "Arrêt à Saint-Cirq-Lapopie",
-                    "Grotte des Merveilles"
+                    "Arrêt à Saint-Cirq-Lapopie sur la route",
+                    "Visite de la Grotte des Merveilles"
                 ],
                 salagou: [
                     "Randonnée autour du lac",
-                    "Cirque de Moureze",
-                    "Pause plage"
+                    "Randonnée au cirque de Mourèze",
+                    "Détour par la plage"
                 ]
             },
             requiredPrograms: {
@@ -363,13 +363,6 @@ function renderProgram() {
 function updateAccommodationLink() {
     const link = document.getElementById("accommodation-link");
     if (!link) {
-        return;
-    }
-
-    if (state.currentOffer === "zelia") {
-        link.href = "#";
-        link.classList.add("disabled");
-        link.textContent = "Liste Airbnb pas encore disponible (lien à venir)";
         return;
     }
 
