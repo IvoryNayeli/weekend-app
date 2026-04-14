@@ -147,7 +147,7 @@ body {
     color: var(--ink);
     cursor: pointer;
     text-align: left;
-    box-shadow: 0 8px 24px rgba(36, 41, 87, 0.06);
+    box-shadow: 0 8px 24px rgba(20, 74, 49, 0.08);
 }
 
 .choice-card.selected {
@@ -171,7 +171,7 @@ body {
     border: 1px solid var(--line);
     border-radius: 18px;
     padding: 18px;
-    box-shadow: 0 8px 20px rgba(36, 41, 87, 0.06);
+    box-shadow: 0 8px 20px rgba(20, 74, 49, 0.08);
 }
 
 .step-card h3 {
@@ -225,14 +225,14 @@ body {
     border-radius: 999px;
     color: var(--white);
     font-weight: 700;
-    background: rgba(18, 22, 46, 0.72);
+    background: rgba(10, 58, 37, 0.72);
 }
 
 .destination-row::after {
     content: "";
     position: absolute;
     inset: 0;
-    background: linear-gradient(to right, rgba(12, 15, 34, 0.5), rgba(12, 15, 34, 0.15));
+    background: linear-gradient(to right, rgba(10, 58, 37, 0.5), rgba(10, 58, 37, 0.15));
 }
 
 .editable-list {
