@@ -24,20 +24,21 @@ const state = {
     selectedDates: [],
     selectedDestination: "",
     programItems: [],
-    accommodationNote: ""
+    accommodationNote: "",
+    offerLocked: false
 };
 
 const seededBooking = {
-    type: "Sejour deja reserve",
-    dates: ["6-12 aout"],
+    type: "Séjour déjà réservé",
+    dates: ["6-12 août"],
     destination: "Les 2 Alpes",
     program: [
-        "Velo de descente",
+        "Vélo de descente",
         "Kayak",
-        "Randonnee",
+        "Randonnée",
         "Restaurant semi-gastronomique"
     ],
-    accommodation: "A confirmer"
+    accommodation: "À confirmer"
 };
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -70,15 +71,19 @@ function setupMenu() {
             if (!viewName) {
                 return;
             }
-            switchView(viewName);
-            closeMobileMenu();
+            navigateTo(viewName);
         });
     });
 
     const btnHomeOffers = document.getElementById("btn-home-offers");
     if (btnHomeOffers) {
-        btnHomeOffers.addEventListener("click", () => switchView("offers"));
+        btnHomeOffers.addEventListener("click", () => navigateTo("offers"));
     }
+}
+
+function navigateTo(viewName) {
+    switchView(viewName);
+    closeMobileMenu();
 }
 
 function switchView(viewName) {
@@ -116,13 +121,25 @@ function setupOffers() {
                 return;
             }
 
-            if (state.selectedOffers.includes(offerKey)) {
-                state.selectedOffers = state.selectedOffers.filter((item) => item !== offerKey);
-                button.classList.remove("selected");
-            } else {
-                state.selectedOffers.push(offerKey);
-                button.classList.add("selected");
+            if (state.offerLocked && !state.selectedOffers.includes(offerKey)) {
+                alert("Ton choix de séjour est verrouillé. Enregistre ce voyage ou recommence à zéro.");
+                return;
             }
+
+            state.selectedOffers = [offerKey];
+            state.offerLocked = true;
+
+            document.querySelectorAll(".choice-card").forEach((card) => {
+                card.classList.remove("selected", "locked");
+            });
+
+            button.classList.add("selected");
+            document.querySelectorAll(".choice-card").forEach((card) => {
+                if (!card.classList.contains("selected")) {
+                    card.classList.add("locked");
+                }
+            });
+
             if (state.selectedOffers.length > 0) {
                 revealStep("flow-dates");
             }
@@ -249,7 +266,7 @@ function renderSummary() {
     }
 
     const offersText = state.selectedOffers
-        .map((offer) => (offer === "tetatet" ? "Sejours en tete-a-tete" : "Sejours avec Zelia"))
+        .map((offer) => (offer === "tetatet" ? "Séjour en tête-à-tête" : "Séjour avec Zélia"))
         .join(" + ");
     const destinationText = state.selectedDestination === "rocamadour" ? "Rocamadour" : "Lac du Salagou";
 
@@ -267,7 +284,7 @@ function saveCurrentBooking() {
 
     const destinationText = state.selectedDestination === "rocamadour" ? "Rocamadour" : "Lac du Salagou";
     const typeText = state.selectedOffers
-        .map((offer) => (offer === "tetatet" ? "Sejours en tete-a-tete" : "Sejours avec Zelia"))
+        .map((offer) => (offer === "tetatet" ? "Séjour en tête-à-tête" : "Séjour avec Zélia"))
         .join(" + ");
 
     bookings.push({
@@ -279,8 +296,38 @@ function saveCurrentBooking() {
     });
 
     localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(bookings));
+    resetCurrentJourney();
     renderBookings();
-    switchView("bookings");
+    navigateTo("bookings");
+}
+
+function resetCurrentJourney() {
+    state.selectedOffers = [];
+    state.selectedDates = [];
+    state.selectedDestination = "";
+    state.programItems = [];
+    state.accommodationNote = "";
+    state.offerLocked = false;
+
+    document.querySelectorAll(".choice-card").forEach((card) => {
+        card.classList.remove("selected", "locked");
+    });
+
+    document.querySelectorAll('input[name="date-option"]').forEach((input) => {
+        input.checked = false;
+    });
+
+    const noteInput = document.getElementById("accommodation-note");
+    if (noteInput) {
+        noteInput.value = "";
+    }
+
+    ["flow-dates", "flow-destination", "flow-program", "flow-accommodation", "flow-summary"].forEach((id) => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.classList.add("hidden");
+        }
+    });
 }
 
 function ensureSeedBooking() {
@@ -343,7 +390,7 @@ function renderBookings() {
 }
 
 function isProtectedBooking(booking) {
-    return booking.destination === "Les 2 Alpes" && booking.dates.join(",") === "6-12 aout";
+    return booking.destination === "Les 2 Alpes" && booking.dates.join(",") === "6-12 août";
 }
 
 function deleteBooking(index) {

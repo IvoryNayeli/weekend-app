@@ -204,6 +204,11 @@ body {
     background: var(--soft-2);
 }
 
+.choice-card.locked {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
 .fine-print {
     font-size: 0.86rem;
     color: var(--muted);
