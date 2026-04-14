@@ -158,7 +158,19 @@ function setupMenu() {
 function navigateTo(viewName, options = {}) {
     switchView(viewName, options);
     closeMobileMenu();
-    window.scrollTo(0, 0);
+    forceScrollToTop();
+}
+
+function forceScrollToTop() {
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+
+    requestAnimationFrame(() => {
+        window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+    });
 }
 
 function switchView(viewName, options = {}) {
