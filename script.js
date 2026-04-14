@@ -58,8 +58,8 @@ const CONFIG = {
                 "2-3 jours sur la semaine du 10 août"
             ],
             destinations: [
-                { id: "mediterranee", label: "Mer Méditerrannée", image: "assets/destinations/lac-du-salagou.jpg" },
-                { id: "atlantique", label: "Océan Atlantique", image: "assets/destinations/rocamadour.jpg" }
+                { id: "mediterranee", label: "Mer Méditerrannée", image: "assets/destinations/mediterranee.jpg" },
+                { id: "atlantique", label: "Océan Atlantique", image: "assets/destinations/atlantique.jpg" }
             ],
             programs: {
                 mediterranee: [
@@ -77,6 +77,10 @@ const CONFIG = {
             requiredPrograms: {
                 mediterranee: [],
                 atlantique: []
+            },
+            removablePrograms: {
+                mediterranee: ["Padel avec ton ami Rémi (l'appât)"],
+                atlantique: []
             }
         }
     },
@@ -89,6 +93,7 @@ const state = {
     selectedDestination: "",
     programItems: [],
     requiredProgramItems: [],
+    removableProgramItems: [],
     accommodationNote: "",
     offerLocked: false,
     lastSavedBookingId: null,
@@ -246,6 +251,12 @@ function setupFlow() {
             state.selectedDestination = destination;
             state.programItems = [...(offerConfig.programs[destination] || [])];
             state.requiredProgramItems = [...(offerConfig.requiredPrograms[destination] || [])];
+            const explicitRemovable = offerConfig.removablePrograms ? offerConfig.removablePrograms[destination] : null;
+            if (explicitRemovable) {
+                state.removableProgramItems = [...explicitRemovable];
+            } else {
+                state.removableProgramItems = state.programItems.filter((item) => !state.requiredProgramItems.includes(item));
+            }
             renderProgram();
             revealStep("flow-program");
         });
@@ -260,6 +271,9 @@ function setupFlow() {
                 return;
             }
             state.programItems.push(text);
+            if (!state.removableProgramItems.includes(text)) {
+                state.removableProgramItems.push(text);
+            }
             input.value = "";
             renderProgram();
         });
@@ -310,7 +324,12 @@ function renderProgram() {
     list.innerHTML = "";
     state.programItems.forEach((item, index) => {
         const isRequired = state.requiredProgramItems.includes(item);
+        const canRemove = state.removableProgramItems.includes(item) && !isRequired;
         const li = document.createElement("li");
+        if (isRequired) {
+            li.classList.add("required-item");
+        }
+
         const label = document.createElement("span");
         label.textContent = item;
         li.appendChild(label);
@@ -322,7 +341,7 @@ function renderProgram() {
             li.appendChild(requiredBadge);
         }
 
-        if (!isRequired) {
+        if (canRemove) {
             const removeBtn = document.createElement("button");
             removeBtn.className = "item-remove";
             removeBtn.type = "button";
@@ -332,6 +351,7 @@ function renderProgram() {
                     return;
                 }
                 state.programItems.splice(index, 1);
+                state.removableProgramItems = state.removableProgramItems.filter((entry) => entry !== item);
                 renderProgram();
             });
             li.appendChild(removeBtn);
@@ -414,6 +434,7 @@ function resetCurrentJourney() {
     state.selectedDestination = "";
     state.programItems = [];
     state.requiredProgramItems = [];
+    state.removableProgramItems = [];
     state.accommodationNote = "";
     state.offerLocked = false;
     state.currentOffer = null;

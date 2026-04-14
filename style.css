@@ -240,12 +240,18 @@ body {
 }
 
 .date-list label {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    padding: 11px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    column-gap: 10px;
+    align-items: start;
+    padding: 11px 11px 11px 8px;
     border: 1px solid var(--line);
     border-radius: 10px;
+}
+
+.date-list label input[type="checkbox"] {
+    margin-top: 2px;
+    justify-self: start;
 }
 
 .date-value {
@@ -312,6 +318,10 @@ body {
     border-radius: 10px;
     padding: 10px 12px;
     gap: 8px;
+}
+
+.editable-list li.required-item {
+    background: rgba(227, 235, 208, 0.55);
 }
 
 .inline-input {
