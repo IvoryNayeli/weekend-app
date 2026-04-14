@@ -180,7 +180,7 @@ function switchView(viewName, options = {}) {
 
     if (targetView && !options.focusLastSaved) {
         requestAnimationFrame(() => {
-            targetView.scrollIntoView({ behavior: "smooth", block: "start" });
+            window.scrollTo({ top: 0, behavior: "smooth" });
         });
     }
 }
