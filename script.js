@@ -64,19 +64,15 @@ function setupMenu() {
         menuOverlay.addEventListener("click", closeMobileMenu);
     }
 
-    document.addEventListener("click", (event) => {
-        const target = event.target.closest(".shortcut-link, .menu-link");
-        if (!target) {
-            return;
-        }
-
-        const viewName = target.dataset.view;
-        if (!viewName) {
-            return;
-        }
-
-        switchView(viewName);
-        closeMobileMenu();
+    document.querySelectorAll(".shortcut-link, .menu-link").forEach((button) => {
+        button.addEventListener("click", () => {
+            const viewName = button.dataset.view;
+            if (!viewName) {
+                return;
+            }
+            switchView(viewName);
+            closeMobileMenu();
+        });
     });
 
     const btnHomeOffers = document.getElementById("btn-home-offers");
