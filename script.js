@@ -25,6 +25,61 @@ const CONFIG = {
             "Randonnée autour du lac"
         ]
     },
+    OFFER_DATA: {
+        tetatet: {
+            label: "Séjour en tête-à-tête",
+            dates: ["15-17 mai", "12-14 juin", "26-28 juin"],
+            destinations: [
+                { id: "rocamadour", label: "Rocamadour", image: "assets/destinations/rocamadour.jpg" },
+                { id: "salagou", label: "Lac du Salagou", image: "assets/destinations/lac-du-salagou.jpg" }
+            ],
+            programs: {
+                rocamadour: [
+                    "Visite de Rocamadour",
+                    "Gouffre de Padirac",
+                    "Arrêt à Saint-Cirq-Lapopie",
+                    "Grotte des Merveilles"
+                ],
+                salagou: [
+                    "Randonnée autour du lac",
+                    "Cirque de Moureze",
+                    "Pause plage"
+                ]
+            },
+            requiredPrograms: {
+                rocamadour: ["Visite de Rocamadour", "Gouffre de Padirac"],
+                salagou: ["Randonnée autour du lac"]
+            }
+        },
+        zelia: {
+            label: "Séjour avec Zélia",
+            dates: [
+                "2-3 jours sur la semaine du 13 juillet",
+                "2-3 jours sur la semaine du 10 août"
+            ],
+            destinations: [
+                { id: "mediterranee", label: "Mer Méditerrannée", image: "assets/destinations/lac-du-salagou.jpg" },
+                { id: "atlantique", label: "Océan Atlantique", image: "assets/destinations/rocamadour.jpg" }
+            ],
+            programs: {
+                mediterranee: [
+                    "Plage",
+                    "Fête foraine",
+                    "Ballade en vélo",
+                    "Padel avec ton ami Rémi (l'appât)"
+                ],
+                atlantique: [
+                    "Plage",
+                    "Fête foraine",
+                    "Ballade en vélo"
+                ]
+            },
+            requiredPrograms: {
+                mediterranee: [],
+                atlantique: []
+            }
+        }
+    },
     STORAGE_KEY: "weekend_bookings"
 };
 
@@ -36,7 +91,8 @@ const state = {
     requiredProgramItems: [],
     accommodationNote: "",
     offerLocked: false,
-    lastSavedBookingId: null
+    lastSavedBookingId: null,
+    currentOffer: null
 };
 
 const seededBooking = {
@@ -138,7 +194,11 @@ function setupOffers() {
             }
 
             state.selectedOffers = [offerKey];
+            state.currentOffer = offerKey;
             state.offerLocked = true;
+
+            renderDatesForCurrentOffer();
+            renderDestinationsForCurrentOffer();
 
             document.querySelectorAll(".choice-card").forEach((card) => {
                 card.classList.remove("selected", "locked");
@@ -171,19 +231,25 @@ function setupFlow() {
         });
     }
 
-    document.querySelectorAll(".destination-row").forEach((button) => {
-        button.addEventListener("click", () => {
-            const destination = button.dataset.destination;
-            if (!destination) {
+    const destinationStack = document.getElementById("destination-stack");
+    if (destinationStack) {
+        destinationStack.addEventListener("click", (event) => {
+            const button = event.target.closest(".destination-row");
+            if (!button) {
                 return;
             }
+            const destination = button.dataset.destination;
+            if (!destination || !state.currentOffer) {
+                return;
+            }
+            const offerConfig = CONFIG.OFFER_DATA[state.currentOffer];
             state.selectedDestination = destination;
-            state.programItems = [...CONFIG.PROGRAMS[destination]];
-            state.requiredProgramItems = [...(CONFIG.REQUIRED_PROGRAMS[destination] || [])];
+            state.programItems = [...(offerConfig.programs[destination] || [])];
+            state.requiredProgramItems = [...(offerConfig.requiredPrograms[destination] || [])];
             renderProgram();
             revealStep("flow-program");
         });
-    });
+    }
 
     const btnAddProgram = document.getElementById("btn-add-program");
     if (btnAddProgram) {
@@ -281,7 +347,16 @@ function updateAccommodationLink() {
         return;
     }
 
+    if (state.currentOffer === "zelia") {
+        link.href = "#";
+        link.classList.add("disabled");
+        link.textContent = "Liste Airbnb pas encore disponible (lien à venir)";
+        return;
+    }
+
     link.href = CONFIG.AIRBNB_LINKS[state.selectedDestination] || "#";
+    link.classList.remove("disabled");
+    link.textContent = "Ouvrir la sélection Airbnb";
 }
 
 function renderSummary() {
@@ -291,9 +366,9 @@ function renderSummary() {
     }
 
     const offersText = state.selectedOffers
-        .map((offer) => (offer === "tetatet" ? "Séjour en tête-à-tête" : "Séjour avec Zélia"))
+        .map((offer) => CONFIG.OFFER_DATA[offer]?.label || offer)
         .join(" + ");
-    const destinationText = state.selectedDestination === "rocamadour" ? "Rocamadour" : "Lac du Salagou";
+    const destinationText = getDestinationLabel(state.currentOffer, state.selectedDestination);
 
     summary.innerHTML = `
         <p><strong>Type:</strong> ${offersText}</p>
@@ -308,9 +383,9 @@ function saveCurrentBooking() {
     const bookings = getBookings();
     const bookingId = createBookingId();
 
-    const destinationText = state.selectedDestination === "rocamadour" ? "Rocamadour" : "Lac du Salagou";
+    const destinationText = getDestinationLabel(state.currentOffer, state.selectedDestination);
     const typeText = state.selectedOffers
-        .map((offer) => (offer === "tetatet" ? "Séjour en tête-à-tête" : "Séjour avec Zélia"))
+        .map((offer) => CONFIG.OFFER_DATA[offer]?.label || offer)
         .join(" + ");
 
     bookings.push({
@@ -341,6 +416,7 @@ function resetCurrentJourney() {
     state.requiredProgramItems = [];
     state.accommodationNote = "";
     state.offerLocked = false;
+    state.currentOffer = null;
 
     document.querySelectorAll(".choice-card").forEach((card) => {
         card.classList.remove("selected", "locked");
@@ -361,6 +437,62 @@ function resetCurrentJourney() {
             el.classList.add("hidden");
         }
     });
+}
+
+function renderDatesForCurrentOffer() {
+    const dateList = document.getElementById("date-list");
+    const offerConfig = CONFIG.OFFER_DATA[state.currentOffer];
+    if (!dateList || !offerConfig) {
+        return;
+    }
+
+    dateList.innerHTML = "";
+    offerConfig.dates.forEach((dateValue) => {
+        const label = document.createElement("label");
+        const input = document.createElement("input");
+        input.type = "checkbox";
+        input.name = "date-option";
+        input.value = dateValue;
+
+        const span = document.createElement("span");
+        span.className = state.currentOffer === "tetatet" ? "date-value compact" : "date-value";
+        span.textContent = dateValue;
+
+        label.appendChild(input);
+        label.appendChild(document.createTextNode(" "));
+        label.appendChild(span);
+        dateList.appendChild(label);
+    });
+}
+
+function renderDestinationsForCurrentOffer() {
+    const destinationStack = document.getElementById("destination-stack");
+    const offerConfig = CONFIG.OFFER_DATA[state.currentOffer];
+    if (!destinationStack || !offerConfig) {
+        return;
+    }
+
+    destinationStack.innerHTML = "";
+    offerConfig.destinations.forEach((destination) => {
+        const button = document.createElement("button");
+        button.className = "destination-row";
+        button.type = "button";
+        button.dataset.destination = destination.id;
+        button.innerHTML = `
+            <img src="${destination.image}" alt="${destination.label}">
+            <span>${destination.label}</span>
+        `;
+        destinationStack.appendChild(button);
+    });
+}
+
+function getDestinationLabel(offerKey, destinationId) {
+    const offerConfig = CONFIG.OFFER_DATA[offerKey];
+    if (!offerConfig) {
+        return destinationId;
+    }
+    const found = offerConfig.destinations.find((item) => item.id === destinationId);
+    return found ? found.label : destinationId;
 }
 
 function ensureSeedBooking() {

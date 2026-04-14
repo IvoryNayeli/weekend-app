@@ -249,6 +249,10 @@ body {
 }
 
 .date-value {
+    white-space: normal;
+}
+
+.date-value.compact {
     white-space: nowrap;
 }
 
@@ -340,6 +344,11 @@ textarea {
     background: linear-gradient(135deg, var(--brand), var(--brand-dark));
     padding: 11px 16px;
     border-radius: 12px;
+}
+
+.airbnb-link.disabled {
+    pointer-events: none;
+    opacity: 0.7;
 }
 
 .summary-box {

@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=20260414-10">
+    <link rel="stylesheet" href="style.css?v=20260414-11">
 </head>
 <body>
     <header class="topbar">
@@ -58,17 +58,17 @@
 
             <div id="flow-dates" class="step-card hidden">
                 <h3>Choix des dates</h3>
-                <div class="date-list">
-                    <label><input type="checkbox" name="date-option" value="15-17 mai"> <span class="date-value">15-17&nbsp;mai</span></label>
-                    <label><input type="checkbox" name="date-option" value="12-14 juin"> <span class="date-value">12-14&nbsp;juin</span></label>
-                    <label><input type="checkbox" name="date-option" value="26-28 juin"> <span class="date-value">26-28&nbsp;juin</span></label>
+                <div id="date-list" class="date-list">
+                    <label><input type="checkbox" name="date-option" value="15-17 mai"> <span class="date-value compact">15-17&nbsp;mai</span></label>
+                    <label><input type="checkbox" name="date-option" value="12-14 juin"> <span class="date-value compact">12-14&nbsp;juin</span></label>
+                    <label><input type="checkbox" name="date-option" value="26-28 juin"> <span class="date-value compact">26-28&nbsp;juin</span></label>
                 </div>
                 <button id="btn-validate-dates" class="btn btn-primary">Valider</button>
             </div>
 
             <div id="flow-destination" class="step-card hidden">
                 <h3>Choix de la destination</h3>
-                <div class="destination-stack">
+                <div id="destination-stack" class="destination-stack">
                     <button class="destination-row" data-destination="rocamadour">
                         <img src="assets/destinations/rocamadour.jpg" alt="Rocamadour">
                         <span>Rocamadour</span>
@@ -110,6 +110,6 @@
         </section>
     </main>
 
-    <script src="script.js?v=20260414-10"></script>
+    <script src="script.js?v=20260414-11"></script>
 </body>
 </html>
