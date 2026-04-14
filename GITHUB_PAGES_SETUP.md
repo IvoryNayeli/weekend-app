@@ -24,7 +24,7 @@
    - GitHub va automatiquement déployer votre site
    - Vous verrez un message vert "Your site is live at..."
 
-### Étape 2️⃣ : Configurer votre email (Obligatoire avant partage)
+### Étape 2️⃣ : Configurer votre email (Incontournable avant partage)
 
 Le formulaire doit envoyer à votre email. Pour configurer :
 

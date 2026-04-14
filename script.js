@@ -360,7 +360,7 @@ function renderProgram() {
         if (isRequired) {
             const requiredBadge = document.createElement("span");
             requiredBadge.className = "item-required";
-            requiredBadge.textContent = "Obligatoire";
+            requiredBadge.textContent = "Incontournable";
             li.appendChild(requiredBadge);
         }
 
