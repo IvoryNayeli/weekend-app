@@ -64,6 +64,13 @@ function setupMenu() {
         menuOverlay.addEventListener("click", closeMobileMenu);
     }
 
+    document.querySelectorAll(".shortcut-link").forEach((btn) => {
+        btn.addEventListener("click", () => {
+            switchView(btn.dataset.view);
+            closeMobileMenu();
+        });
+    });
+
     document.querySelectorAll(".menu-link").forEach((btn) => {
         btn.addEventListener("click", () => {
             switchView(btn.dataset.view);

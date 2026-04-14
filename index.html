@@ -6,13 +6,18 @@
     <title>Escapades | Mes Voyages</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Parisienne&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css?v=20260414-2">
 </head>
 <body>
     <header class="topbar">
         <div class="brand">Escapades</div>
-        <button id="btn-menu-toggle" class="menu-toggle" aria-label="Ouvrir le menu" aria-expanded="false">☰</button>
+        <div class="topbar-actions">
+            <button class="shortcut-link" data-view="home" aria-label="Accueil">🏠</button>
+            <button class="shortcut-link" data-view="offers" aria-label="Voir les offres">🧳</button>
+            <button class="shortcut-link" data-view="bookings" aria-label="Mes réservations">❤</button>
+            <button id="btn-menu-toggle" class="menu-toggle" aria-label="Ouvrir le menu" aria-expanded="false">☰</button>
+        </div>
         <nav class="menu" aria-label="Menu principal">
             <button class="menu-link active" data-view="home">Accueil</button>
             <button class="menu-link" data-view="offers">Voir les offres</button>

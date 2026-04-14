@@ -5,21 +5,21 @@
 }
 
 :root {
-    --bg: #ecf7ef;
-    --ink: #123027;
-    --muted: #3f6255;
-    --brand: #2fa66f;
-    --brand-dark: #1f7f52;
+    --bg: #f3fcfa;
+    --ink: #1f3d38;
+    --muted: #5c7f78;
+    --brand: #7bcfc2;
+    --brand-dark: #56b4a5;
     --white: #ffffff;
-    --line: #cde4d4;
-    --shadow: 0 20px 40px rgba(22, 84, 56, 0.16);
+    --line: #d4ece7;
+    --shadow: 0 20px 40px rgba(64, 128, 116, 0.14);
 }
 
 body {
     font-family: "Outfit", sans-serif;
     color: var(--ink);
-    background: radial-gradient(circle at 10% 10%, #c8ebd3 0%, transparent 35%),
-        radial-gradient(circle at 90% 25%, #dcf2e2 0%, transparent 28%),
+    background: radial-gradient(circle at 10% 10%, #d8f3ee 0%, transparent 35%),
+        radial-gradient(circle at 90% 25%, #e7f8f5 0%, transparent 28%),
         var(--bg);
     min-height: 100vh;
 }
@@ -28,7 +28,7 @@ body {
     position: sticky;
     top: 0;
     z-index: 10;
-    background: rgba(240, 252, 245, 0.92);
+    background: rgba(245, 255, 252, 0.96);
     backdrop-filter: blur(10px);
     border-bottom: 1px solid var(--line);
     padding: 14px 22px;
@@ -38,8 +38,26 @@ body {
 }
 
 .brand {
-    font-family: "Playfair Display", serif;
-    font-size: 1.35rem;
+    font-family: "Parisienne", cursive;
+    font-size: 2rem;
+    line-height: 1;
+}
+
+.topbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.shortcut-link {
+    border: 1px solid var(--line);
+    background: #f2fbf9;
+    color: var(--ink);
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    font-size: 1rem;
+    cursor: pointer;
 }
 
 .menu-toggle {
@@ -72,8 +90,8 @@ body {
 
 .menu-link.active {
     background: var(--brand);
-    color: var(--white);
-    box-shadow: 0 8px 20px rgba(47, 166, 111, 0.28);
+    color: #0f2f2a;
+    box-shadow: 0 8px 20px rgba(123, 207, 194, 0.35);
 }
 
 .shell {
@@ -96,14 +114,14 @@ body {
     border-radius: 26px;
     overflow: hidden;
     box-shadow: var(--shadow);
-    background: linear-gradient(130deg, rgba(47, 166, 111, 0.9), rgba(31, 127, 82, 0.9)),
+    background: linear-gradient(130deg, rgba(123, 207, 194, 0.88), rgba(86, 180, 165, 0.88)),
         url("assets/destinations/lac-du-salagou.jpg") center/cover;
 }
 
 .hero-overlay {
     position: absolute;
     inset: 0;
-    background: linear-gradient(to right, rgba(9, 36, 24, 0.52), rgba(9, 36, 24, 0.2));
+    background: linear-gradient(to right, rgba(18, 62, 54, 0.46), rgba(18, 62, 54, 0.18));
 }
 
 .hero-content {
@@ -147,12 +165,12 @@ body {
     color: var(--ink);
     cursor: pointer;
     text-align: left;
-    box-shadow: 0 8px 24px rgba(20, 74, 49, 0.08);
+    box-shadow: 0 8px 24px rgba(61, 122, 111, 0.08);
 }
 
 .choice-card.selected {
     border-color: var(--brand);
-    background: #e4f5ea;
+    background: #e9f8f5;
 }
 
 .fine-print {
@@ -171,7 +189,7 @@ body {
     border: 1px solid var(--line);
     border-radius: 18px;
     padding: 18px;
-    box-shadow: 0 8px 20px rgba(20, 74, 49, 0.08);
+    box-shadow: 0 8px 20px rgba(61, 122, 111, 0.08);
 }
 
 .step-card h3 {
@@ -225,14 +243,14 @@ body {
     border-radius: 999px;
     color: var(--white);
     font-weight: 700;
-    background: rgba(10, 58, 37, 0.72);
+    background: rgba(25, 82, 72, 0.68);
 }
 
 .destination-row::after {
     content: "";
     position: absolute;
     inset: 0;
-    background: linear-gradient(to right, rgba(10, 58, 37, 0.5), rgba(10, 58, 37, 0.15));
+    background: linear-gradient(to right, rgba(25, 82, 72, 0.46), rgba(25, 82, 72, 0.12));
 }
 
 .editable-list {
@@ -262,7 +280,7 @@ body {
 input,
 textarea {
     width: 100%;
-    border: 1px solid #c4decb;
+    border: 1px solid #c5e6e0;
     border-radius: 10px;
     padding: 10px 12px;
     font: inherit;
@@ -326,11 +344,11 @@ textarea {
 
 .btn-primary {
     background: linear-gradient(135deg, var(--brand), var(--brand-dark));
-    color: var(--white);
+    color: #123a33;
 }
 
 .btn-secondary {
-    background: #dbf2e3;
+    background: #e5f7f3;
     color: var(--brand-dark);
 }
 
@@ -372,7 +390,7 @@ textarea {
         width: min(80vw, 300px);
         background: var(--white);
         border-left: 1px solid var(--line);
-        box-shadow: -10px 0 30px rgba(0, 0, 0, 0.12);
+        box-shadow: -10px 0 30px rgba(61, 122, 111, 0.12);
         padding: 70px 14px 18px;
         display: flex;
         flex-direction: column;
@@ -396,7 +414,7 @@ textarea {
     .menu-overlay {
         position: fixed;
         inset: 0;
-        background: rgba(20, 41, 31, 0.35);
+        background: transparent;
         z-index: 20;
     }
 
